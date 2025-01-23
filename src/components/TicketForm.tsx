@@ -14,16 +14,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { AlertCircle } from "lucide-react";
 
-export const TicketForm = () => {
+interface TicketFormProps {
+  onClose: () => void;
+}
+
+export const TicketForm = ({ onClose }: TicketFormProps) => {
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>Create New Ticket</CardTitle>
+        <CardTitle className="text-2xl">Create New Ticket</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-6">
         <div className="space-y-2">
-          <label className="text-sm font-medium">Title</label>
+          <label className="text-sm font-medium text-gray-700">Subject</label>
           <input
             type="text"
             placeholder="Brief description of the issue"
@@ -32,17 +37,17 @@ export const TicketForm = () => {
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium">Description</label>
+          <label className="text-sm font-medium text-gray-700">Description</label>
           <textarea
             rows={4}
             placeholder="Detailed description of the issue"
-            className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary resize-none"
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-6">
           <div className="space-y-2">
-            <label className="text-sm font-medium">Priority</label>
+            <label className="text-sm font-medium text-gray-700">Priority</label>
             <Select>
               <SelectTrigger>
                 <SelectValue placeholder="Select priority" />
@@ -50,29 +55,39 @@ export const TicketForm = () => {
               <SelectContent>
                 <SelectItem value="low">Low</SelectItem>
                 <SelectItem value="medium">Medium</SelectItem>
-                <SelectItem value="high">High</SelectItem>
+                <SelectItem value="high">
+                  <div className="flex items-center gap-2">
+                    <AlertCircle className="h-4 w-4 text-red-500" />
+                    High
+                  </div>
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Category</label>
+            <label className="text-sm font-medium text-gray-700">Category</label>
             <Select>
               <SelectTrigger>
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="technical">Technical</SelectItem>
+                <SelectItem value="technical">Technical Issue</SelectItem>
                 <SelectItem value="billing">Billing</SelectItem>
-                <SelectItem value="general">General</SelectItem>
+                <SelectItem value="feature">Feature Request</SelectItem>
+                <SelectItem value="general">General Inquiry</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
       </CardContent>
-      <CardFooter className="flex justify-end space-x-2">
-        <Button variant="outline">Cancel</Button>
-        <Button className="bg-primary hover:bg-primary/90">Submit Ticket</Button>
+      <CardFooter className="flex justify-end space-x-2 border-t pt-6">
+        <Button variant="outline" onClick={onClose}>
+          Cancel
+        </Button>
+        <Button className="bg-primary hover:bg-primary/90">
+          Create Ticket
+        </Button>
       </CardFooter>
     </Card>
   );

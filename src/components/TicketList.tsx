@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+import { Search, Plus, Clock, AlertCircle, CheckCircle2 } from "lucide-react";
+
+interface TicketListProps {
+  onNewTicket: () => void;
+}
 
 interface Ticket {
   id: string;
@@ -10,6 +14,7 @@ interface Ticket {
   status: "open" | "in-progress" | "closed";
   priority: "low" | "medium" | "high";
   createdAt: string;
+  requester: string;
 }
 
 const mockTickets: Ticket[] = [
@@ -19,6 +24,7 @@ const mockTickets: Ticket[] = [
     status: "open",
     priority: "high",
     createdAt: "2024-03-10",
+    requester: "John Doe",
   },
   {
     id: "TICK-002",
@@ -26,6 +32,7 @@ const mockTickets: Ticket[] = [
     status: "in-progress",
     priority: "medium",
     createdAt: "2024-03-09",
+    requester: "Jane Smith",
   },
   {
     id: "TICK-003",
@@ -33,13 +40,26 @@ const mockTickets: Ticket[] = [
     status: "closed",
     priority: "low",
     createdAt: "2024-03-08",
+    requester: "Mike Johnson",
   },
 ];
 
-const statusColors = {
-  open: "bg-yellow-100 text-yellow-800",
-  "in-progress": "bg-blue-100 text-blue-800",
-  closed: "bg-green-100 text-green-800",
+const statusConfig = {
+  open: {
+    label: "Open",
+    icon: AlertCircle,
+    className: "bg-yellow-100 text-yellow-800",
+  },
+  "in-progress": {
+    label: "In Progress",
+    icon: Clock,
+    className: "bg-blue-100 text-blue-800",
+  },
+  closed: {
+    label: "Closed",
+    icon: CheckCircle2,
+    className: "bg-green-100 text-green-800",
+  },
 };
 
 const priorityColors = {
@@ -48,47 +68,60 @@ const priorityColors = {
   high: "bg-red-100 text-red-800",
 };
 
-export const TicketList = () => {
+export const TicketList = ({ onNewTicket }: TicketListProps) => {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredTickets = mockTickets.filter((ticket) =>
+    ticket.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-900">Support Tickets</h2>
-        <Button className="bg-primary hover:bg-primary/90">New Ticket</Button>
-      </div>
-
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
         <input
           type="text"
           placeholder="Search tickets..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
         />
       </div>
 
       <div className="grid gap-4">
-        {mockTickets.map((ticket) => (
-          <Card key={ticket.id} className="p-4 hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <span className="font-mono text-sm text-gray-500">
-                    {ticket.id}
-                  </span>
-                  <h3 className="font-semibold text-gray-900">{ticket.title}</h3>
+        {filteredTickets.map((ticket) => {
+          const StatusIcon = statusConfig[ticket.status].icon;
+          return (
+            <Card
+              key={ticket.id}
+              className="p-4 hover:shadow-md transition-shadow cursor-pointer"
+            >
+              <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-sm text-gray-500">
+                      {ticket.id}
+                    </span>
+                    <h3 className="font-semibold text-gray-900">{ticket.title}</h3>
+                  </div>
+                  <div className="flex gap-2 items-center">
+                    <Badge className={statusConfig[ticket.status].className}>
+                      <StatusIcon className="h-3 w-3 mr-1" />
+                      {statusConfig[ticket.status].label}
+                    </Badge>
+                    <Badge className={priorityColors[ticket.priority]}>
+                      {ticket.priority}
+                    </Badge>
+                    <span className="text-sm text-gray-500">
+                      {ticket.requester}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex gap-2">
-                  <Badge className={statusColors[ticket.status]}>
-                    {ticket.status}
-                  </Badge>
-                  <Badge className={priorityColors[ticket.priority]}>
-                    {ticket.priority}
-                  </Badge>
-                </div>
+                <div className="text-sm text-gray-500">{ticket.createdAt}</div>
               </div>
-              <div className="text-sm text-gray-500">{ticket.createdAt}</div>
-            </div>
-          </Card>
-        ))}
+            </Card>
+          )
+        })}
       </div>
     </div>
   );
