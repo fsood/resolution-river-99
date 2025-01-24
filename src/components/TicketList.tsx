@@ -14,6 +14,7 @@ interface TicketListProps {
 export const TicketList = ({ tickets, onNewTicket }: TicketListProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCreatedAt, setFilterCreatedAt] = useState<string>("");
+  const [filterClosedAt, setFilterClosedAt] = useState<string>("");
   const [filterCompany, setFilterCompany] = useState<string>("");
   const [filterAgent, setFilterAgent] = useState<string>("");
   const [filterType, setFilterType] = useState<string>("");
@@ -27,13 +28,14 @@ export const TicketList = ({ tickets, onNewTicket }: TicketListProps) => {
       ticket.contact.toLowerCase().includes(searchQuery.toLowerCase());
     
     const matchesCreatedAt = !filterCreatedAt || ticket.createdAt.includes(filterCreatedAt);
+    const matchesClosedAt = !filterClosedAt || (ticket.closedAt && ticket.closedAt.includes(filterClosedAt));
     const matchesCompany = !filterCompany || ticket.company === filterCompany;
     const matchesAgent = !filterAgent || ticket.agent === filterAgent;
     const matchesType = !filterType || ticket.type === filterType;
     const matchesPriority = !filterPriority || ticket.priority === filterPriority;
     const matchesStatus = !filterStatus || ticket.status === filterStatus;
     
-    return matchesSearch && matchesCreatedAt && matchesCompany && 
+    return matchesSearch && matchesCreatedAt && matchesClosedAt && matchesCompany && 
            matchesAgent && matchesType && matchesPriority && matchesStatus;
   });
 
@@ -67,6 +69,7 @@ export const TicketList = ({ tickets, onNewTicket }: TicketListProps) => {
                   <TicketFilters
                     onFilterChange={{
                       setFilterCreatedAt,
+                      setFilterClosedAt,
                       setFilterCompany,
                       setFilterAgent,
                       setFilterType,

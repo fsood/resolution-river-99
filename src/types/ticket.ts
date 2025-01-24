@@ -10,4 +10,5 @@ export interface Ticket {
   agent?: string;
   description: string;
   createdAt: string;
+  closedAt?: string;
 }
