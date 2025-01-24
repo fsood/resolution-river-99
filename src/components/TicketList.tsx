@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Search, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { TicketFilters } from "./tickets/TicketFilters";
 import { TicketCard } from "./tickets/TicketCard";
 import { TicketActions } from "./tickets/TicketActions";
@@ -95,65 +95,66 @@ export const TicketList = ({ onNewTicket }: TicketListProps) => {
   });
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full">
-        <TicketFilters
-          onFilterChange={{
-            setFilterCreatedAt,
-            setFilterClosedAt,
-            setFilterCompany,
-            setFilterAgent,
-          }}
-          tickets={mockTickets}
-        />
-        
-        <div className="flex-1 p-6">
-          <div className="space-y-6">
-            <div className="flex items-center justify-between gap-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                <input
-                  type="text"
-                  placeholder="Search tickets..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                />
-              </div>
-              <SidebarTrigger>
+    <div className="min-h-screen w-full">
+      <div className="flex-1 p-6">
+        <div className="space-y-6">
+          <div className="flex items-center justify-between gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <input
+                type="text"
+                placeholder="Search tickets..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+            </div>
+            <Sheet>
+              <SheetTrigger asChild>
                 <Button variant="outline" size="sm">
                   <Filter className="h-4 w-4 mr-2" />
                   Filters
                 </Button>
-              </SidebarTrigger>
-              <TicketActions
-                selectedTickets={selectedTickets}
-                tickets={mockTickets}
-                onBulkAction={handleBulkAction}
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+                <TicketFilters
+                  onFilterChange={{
+                    setFilterCreatedAt,
+                    setFilterClosedAt,
+                    setFilterCompany,
+                    setFilterAgent,
+                  }}
+                  tickets={mockTickets}
+                />
+              </SheetContent>
+            </Sheet>
+            <TicketActions
+              selectedTickets={selectedTickets}
+              tickets={mockTickets}
+              onBulkAction={handleBulkAction}
+            />
+          </div>
+
+          <div className="grid gap-4">
+            <div className="flex items-center gap-2 px-4">
+              <Checkbox
+                checked={selectedTickets.length === mockTickets.length}
+                onCheckedChange={handleSelectAll}
               />
+              <span className="text-sm text-gray-500">Select All</span>
             </div>
 
-            <div className="grid gap-4">
-              <div className="flex items-center gap-2 px-4">
-                <Checkbox
-                  checked={selectedTickets.length === mockTickets.length}
-                  onCheckedChange={handleSelectAll}
-                />
-                <span className="text-sm text-gray-500">Select All</span>
-              </div>
-
-              {filteredTickets.map((ticket) => (
-                <TicketCard
-                  key={ticket.id}
-                  ticket={ticket}
-                  isSelected={selectedTickets.includes(ticket.id)}
-                  onSelect={(checked) => handleSelectTicket(ticket.id, checked)}
-                />
-              ))}
-            </div>
+            {filteredTickets.map((ticket) => (
+              <TicketCard
+                key={ticket.id}
+                ticket={ticket}
+                isSelected={selectedTickets.includes(ticket.id)}
+                onSelect={(checked) => handleSelectTicket(ticket.id, checked)}
+              />
+            ))}
           </div>
         </div>
       </div>
-    </SidebarProvider>
+    </div>
   );
 };
