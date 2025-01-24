@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { TicketList } from "@/components/TicketList";
 import { TicketForm } from "@/components/TicketForm";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,8 @@ import { AppSidebar } from "@/components/AppSidebar";
 
 const Index = () => {
   const [showForm, setShowForm] = useState(false);
+  const location = useLocation();
+  const isTicketsPage = location.pathname === "/tickets";
 
   return (
     <SidebarProvider>
@@ -18,7 +21,9 @@ const Index = () => {
             <div className="container mx-auto px-4 py-4 flex justify-between items-center">
               <div className="flex items-center gap-2">
                 <SidebarTrigger />
-                <h1 className="text-2xl font-bold text-primary">Support Desk</h1>
+                {isTicketsPage && (
+                  <h1 className="text-2xl font-bold text-primary">Support Desk</h1>
+                )}
               </div>
               <div className="flex items-center gap-2">
                 <Button
