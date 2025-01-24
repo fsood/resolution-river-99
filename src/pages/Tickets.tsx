@@ -7,7 +7,7 @@ import { Search, Plus, Filter } from "lucide-react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 
-const Index = () => {
+const Tickets = () => {
   const [showForm, setShowForm] = useState(false);
   const location = useLocation();
   const isTicketsPage = location.pathname === "/tickets";
@@ -69,4 +69,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Tickets;

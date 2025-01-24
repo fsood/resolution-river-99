@@ -3,8 +3,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
+import Tickets from "./pages/Tickets";
 import Contacts from "./pages/Contacts";
 import Solutions from "./pages/Solutions";
 import Analytics from "./pages/Analytics";
@@ -21,7 +21,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Navigate to="/tickets" replace />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/tickets" element={<Index />} />
+          <Route path="/tickets" element={<Tickets />} />
           <Route path="/contacts" element={<Contacts />} />
           <Route path="/solutions" element={<Solutions />} />
           <Route path="/analytics" element={<Analytics />} />
