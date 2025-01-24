@@ -1,97 +1,40 @@
 import React, { useState } from "react";
-import { Search, Filter } from "lucide-react";
+import { Search, Filter, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { TicketFilters } from "./tickets/TicketFilters";
 import { TicketCard } from "./tickets/TicketCard";
-import { TicketActions } from "./tickets/TicketActions";
+import type { Ticket } from "@/types/ticket";
 
 interface TicketListProps {
+  tickets: Ticket[];
   onNewTicket: () => void;
 }
 
-interface Ticket {
-  id: string;
-  title: string;
-  status: "open" | "in-progress" | "closed";
-  priority: "low" | "medium" | "high";
-  createdAt: string;
-  closedAt?: string;
-  requester: string;
-  company: string;
-  agent?: string;
-}
-
-const mockTickets: Ticket[] = [
-  {
-    id: "TICK-001",
-    title: "Unable to access email",
-    status: "open",
-    priority: "high",
-    createdAt: "2024-03-10",
-    requester: "John Doe",
-    company: "Acme Corp",
-    agent: "Sarah Smith",
-  },
-  {
-    id: "TICK-002",
-    title: "Printer not responding",
-    status: "in-progress",
-    priority: "medium",
-    createdAt: "2024-03-09",
-    requester: "Jane Smith",
-    company: "TechCo",
-  },
-  {
-    id: "TICK-003",
-    title: "Software update request",
-    status: "closed",
-    priority: "low",
-    createdAt: "2024-03-08",
-    closedAt: "2024-03-09",
-    requester: "Mike Johnson",
-    company: "DevInc",
-    agent: "Tom Wilson",
-  },
-];
-
-export const TicketList = ({ onNewTicket }: TicketListProps) => {
+export const TicketList = ({ tickets, onNewTicket }: TicketListProps) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedTickets, setSelectedTickets] = useState<string[]>([]);
   const [filterCreatedAt, setFilterCreatedAt] = useState<string>("");
-  const [filterClosedAt, setFilterClosedAt] = useState<string>("");
   const [filterCompany, setFilterCompany] = useState<string>("");
   const [filterAgent, setFilterAgent] = useState<string>("");
+  const [filterType, setFilterType] = useState<string>("");
+  const [filterPriority, setFilterPriority] = useState<string>("");
+  const [filterStatus, setFilterStatus] = useState<string>("");
 
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setSelectedTickets(mockTickets.map(ticket => ticket.id));
-    } else {
-      setSelectedTickets([]);
-    }
-  };
-
-  const handleSelectTicket = (ticketId: string, checked: boolean) => {
-    if (checked) {
-      setSelectedTickets([...selectedTickets, ticketId]);
-    } else {
-      setSelectedTickets(selectedTickets.filter(id => id !== ticketId));
-    }
-  };
-
-  const handleBulkAction = (action: string) => {
-    console.log(`Performing ${action} on tickets:`, selectedTickets);
-  };
-
-  const filteredTickets = mockTickets.filter((ticket) => {
-    const matchesSearch = ticket.title.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCreatedAt = !filterCreatedAt || ticket.createdAt === filterCreatedAt;
-    const matchesClosedAt = !filterClosedAt || ticket.closedAt === filterClosedAt;
+  const filteredTickets = tickets.filter((ticket) => {
+    const matchesSearch = 
+      ticket.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      ticket.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      ticket.contact.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    const matchesCreatedAt = !filterCreatedAt || ticket.createdAt.includes(filterCreatedAt);
     const matchesCompany = !filterCompany || ticket.company === filterCompany;
     const matchesAgent = !filterAgent || ticket.agent === filterAgent;
+    const matchesType = !filterType || ticket.type === filterType;
+    const matchesPriority = !filterPriority || ticket.priority === filterPriority;
+    const matchesStatus = !filterStatus || ticket.status === filterStatus;
     
-    return matchesSearch && matchesCreatedAt && matchesClosedAt && matchesCompany && matchesAgent;
+    return matchesSearch && matchesCreatedAt && matchesCompany && 
+           matchesAgent && matchesType && matchesPriority && matchesStatus;
   });
 
   return (
@@ -109,49 +52,50 @@ export const TicketList = ({ onNewTicket }: TicketListProps) => {
                 className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="sm">
-                  <Filter className="h-4 w-4 mr-2" />
-                  Filters
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-[300px] sm:w-[400px]">
-                <TicketFilters
-                  onFilterChange={{
-                    setFilterCreatedAt,
-                    setFilterClosedAt,
-                    setFilterCompany,
-                    setFilterAgent,
-                  }}
-                  tickets={mockTickets}
-                />
-              </SheetContent>
-            </Sheet>
-            <TicketActions
-              selectedTickets={selectedTickets}
-              tickets={mockTickets}
-              onBulkAction={handleBulkAction}
-            />
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="icon">
+                <Bell className="h-4 w-4" />
+              </Button>
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    <Filter className="h-4 w-4 mr-2" />
+                    Filters
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                  <TicketFilters
+                    onFilterChange={{
+                      setFilterCreatedAt,
+                      setFilterCompany,
+                      setFilterAgent,
+                      setFilterType,
+                      setFilterPriority,
+                      setFilterStatus,
+                    }}
+                    tickets={tickets}
+                  />
+                </SheetContent>
+              </Sheet>
+              <Button
+                size="sm"
+                className="bg-primary hover:bg-primary/90"
+                onClick={onNewTicket}
+              >
+                New Ticket
+              </Button>
+            </div>
           </div>
 
           <div className="grid gap-4">
-            <div className="flex items-center gap-2 px-4">
-              <Checkbox
-                checked={selectedTickets.length === mockTickets.length}
-                onCheckedChange={handleSelectAll}
-              />
-              <span className="text-sm text-gray-500">Select All</span>
-            </div>
-
             {filteredTickets.map((ticket) => (
-              <TicketCard
-                key={ticket.id}
-                ticket={ticket}
-                isSelected={selectedTickets.includes(ticket.id)}
-                onSelect={(checked) => handleSelectTicket(ticket.id, checked)}
-              />
+              <TicketCard key={ticket.id} ticket={ticket} />
             ))}
+            {filteredTickets.length === 0 && (
+              <div className="text-center py-8 text-gray-500">
+                No tickets found
+              </div>
+            )}
           </div>
         </div>
       </div>

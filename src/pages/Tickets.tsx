@@ -3,14 +3,23 @@ import { useLocation } from "react-router-dom";
 import { TicketList } from "@/components/TicketList";
 import { TicketForm } from "@/components/TicketForm";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
+import type { Ticket } from "@/types/ticket";
 
 const Tickets = () => {
   const [showForm, setShowForm] = useState(false);
+  const [tickets, setTickets] = useState<Ticket[]>([]);
   const location = useLocation();
   const isTicketsPage = location.pathname === "/tickets";
+
+  const handleCreateTicket = (ticketData: Omit<Ticket, "id">) => {
+    const newTicket: Ticket = {
+      ...ticketData,
+      id: `TICK-${String(tickets.length + 1).padStart(3, '0')}`,
+    };
+    setTickets([newTicket, ...tickets]);
+  };
 
   return (
     <SidebarProvider>
@@ -23,16 +32,6 @@ const Tickets = () => {
                 {isTicketsPage && (
                   <h1 className="text-2xl font-bold text-primary">Support Desk</h1>
                 )}
-              </div>
-              <div className="flex items-center gap-2">
-                <Button
-                  size="sm"
-                  className="bg-primary hover:bg-primary/90"
-                  onClick={() => setShowForm(true)}
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  New Ticket
-                </Button>
               </div>
             </div>
           </header>
@@ -47,10 +46,16 @@ const Tickets = () => {
                 >
                   ← Back to Tickets
                 </Button>
-                <TicketForm onClose={() => setShowForm(false)} />
+                <TicketForm 
+                  onClose={() => setShowForm(false)}
+                  onSubmit={handleCreateTicket}
+                />
               </div>
             ) : (
-              <TicketList onNewTicket={() => setShowForm(true)} />
+              <TicketList 
+                tickets={tickets}
+                onNewTicket={() => setShowForm(true)}
+              />
             )}
           </main>
         </div>
