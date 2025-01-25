@@ -18,21 +18,22 @@ export const TicketList = ({ tickets, onNewTicket }: TicketListProps) => {
   const [filterType, setFilterType] = useState<string>("");
   const [filterPriority, setFilterPriority] = useState<string>("");
   const [filterStatus, setFilterStatus] = useState<string>("");
+  const [localTickets, setLocalTickets] = useState<Ticket[]>(tickets);
 
   // Load tickets from localStorage on component mount
   useEffect(() => {
     const storedTickets = localStorage.getItem('tickets');
     if (storedTickets) {
-      tickets = JSON.parse(storedTickets);
+      setLocalTickets(JSON.parse(storedTickets));
     }
   }, []);
 
   // Save tickets to localStorage whenever they change
   useEffect(() => {
-    localStorage.setItem('tickets', JSON.stringify(tickets));
-  }, [tickets]);
+    localStorage.setItem('tickets', JSON.stringify(localTickets));
+  }, [localTickets]);
 
-  const filteredTickets = tickets.filter((ticket) => {
+  const filteredTickets = localTickets.filter((ticket) => {
     const matchesSearch = 
       ticket.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
       ticket.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -52,36 +53,34 @@ export const TicketList = ({ tickets, onNewTicket }: TicketListProps) => {
 
   return (
     <div className="min-h-screen w-full">
-      <div className="flex-1 p-6">
-        <div className="space-y-6">
-          <TicketHeader tickets={tickets} />
-          
-          <TicketSearch
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            onNewTicket={onNewTicket}
-            tickets={tickets}
-            onFilterChange={{
-              setFilterCreatedAt,
-              setFilterClosedAt,
-              setFilterCompany,
-              setFilterAgent,
-              setFilterType,
-              setFilterPriority,
-              setFilterStatus,
-            }}
-          />
+      <div className="flex-1 space-y-4 p-4 md:p-8">
+        <TicketHeader tickets={localTickets} />
+        
+        <TicketSearch
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          onNewTicket={onNewTicket}
+          tickets={localTickets}
+          onFilterChange={{
+            setFilterCreatedAt,
+            setFilterClosedAt,
+            setFilterCompany,
+            setFilterAgent,
+            setFilterType,
+            setFilterPriority,
+            setFilterStatus,
+          }}
+        />
 
-          <div className="grid gap-4">
-            {filteredTickets.map((ticket) => (
-              <TicketCard key={ticket.id} ticket={ticket} />
-            ))}
-            {filteredTickets.length === 0 && (
-              <div className="text-center py-8 text-gray-500">
-                No tickets found
-              </div>
-            )}
-          </div>
+        <div className="grid gap-4">
+          {filteredTickets.map((ticket) => (
+            <TicketCard key={ticket.id} ticket={ticket} />
+          ))}
+          {filteredTickets.length === 0 && (
+            <div className="text-center py-8 text-gray-500">
+              No tickets found
+            </div>
+          )}
         </div>
       </div>
     </div>
