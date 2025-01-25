@@ -56,7 +56,7 @@ const menuItems = [
 export function AppSidebar() {
   return (
     <Sidebar>
-      <SidebarTrigger asChild>
+      <SidebarTrigger>
         <button className="fixed left-4 top-4 z-50 lg:hidden">
           <Menu className="h-6 w-6" />
         </button>
@@ -68,9 +68,9 @@ export function AppSidebar() {
             <SidebarMenu>
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link to={item.path} className="w-full">
-                      <item.icon />
+                  <SidebarMenuButton>
+                    <Link to={item.path} className="flex items-center gap-2 w-full">
+                      <item.icon className="h-4 w-4" />
                       <span>{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
