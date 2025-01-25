@@ -1,14 +1,18 @@
-import React from "react";
-import { Bell, Download } from "lucide-react";
+import React, { useState } from "react";
+import { Bell, Download, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import * as XLSX from 'xlsx';
 import type { Ticket } from "@/types/ticket";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { AppSidebar } from "@/components/AppSidebar";
 
 interface TicketHeaderProps {
   tickets: Ticket[];
 }
 
 export const TicketHeader = ({ tickets }: TicketHeaderProps) => {
+  const [isNavOpen, setIsNavOpen] = useState(true);
+  
   const handleExportToExcel = () => {
     const ws = XLSX.utils.json_to_sheet(tickets);
     const wb = XLSX.utils.book_new();
@@ -18,7 +22,18 @@ export const TicketHeader = ({ tickets }: TicketHeaderProps) => {
 
   return (
     <div className="flex items-center justify-between border-b pb-4">
-      <h1 className="text-2xl font-bold text-primary">Support Desk</h1>
+      <div className="flex items-center gap-4">
+        <h1 className="text-2xl font-bold text-primary">Support Desk</h1>
+        <CollapsibleTrigger asChild>
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={() => setIsNavOpen(!isNavOpen)}
+          >
+            {isNavOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          </Button>
+        </CollapsibleTrigger>
+      </div>
       <div className="flex items-center gap-2">
         <Button variant="outline" size="icon">
           <Bell className="h-4 w-4" />

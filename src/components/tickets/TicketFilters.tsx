@@ -2,9 +2,11 @@ import { Calendar } from "@/components/ui/calendar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, ChevronDown, ChevronUp } from "lucide-react";
 import { format } from "date-fns";
 import type { Ticket } from "@/types/ticket";
+import { useState } from "react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface TicketFiltersProps {
   onFilterChange: {
@@ -20,6 +22,7 @@ interface TicketFiltersProps {
 }
 
 export const TicketFilters = ({ onFilterChange, tickets }: TicketFiltersProps) => {
+  const [isOpen, setIsOpen] = useState(true);
   const {
     setFilterCreatedAt,
     setFilterClosedAt,
@@ -31,9 +34,17 @@ export const TicketFilters = ({ onFilterChange, tickets }: TicketFiltersProps) =
   } = onFilterChange;
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-4">
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-medium">Filters</h3>
+        <CollapsibleTrigger asChild>
+          <Button variant="ghost" size="sm">
+            {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          </Button>
+        </CollapsibleTrigger>
+      </div>
+      
+      <CollapsibleContent>
         <div className="space-y-4">
           <div className="space-y-2">
             <label className="text-sm font-medium">Created Date</label>
@@ -132,7 +143,7 @@ export const TicketFilters = ({ onFilterChange, tickets }: TicketFiltersProps) =
             </SelectContent>
           </Select>
         </div>
-      </div>
-    </div>
+      </CollapsibleContent>
+    </Collapsible>
   );
 };
