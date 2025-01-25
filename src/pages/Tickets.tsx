@@ -5,13 +5,11 @@ import { TicketForm } from "@/components/TicketForm";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
-import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import type { Ticket } from "@/types/ticket";
 
 const Tickets = () => {
   const [showForm, setShowForm] = useState(false);
   const [tickets, setTickets] = useState<Ticket[]>([]);
-  const [isNavOpen, setIsNavOpen] = useState(true);
   const location = useLocation();
 
   // Load tickets from localStorage on component mount
@@ -35,11 +33,7 @@ const Tickets = () => {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
-        <Collapsible open={isNavOpen}>
-          <CollapsibleContent>
-            <AppSidebar />
-          </CollapsibleContent>
-        </Collapsible>
+        <AppSidebar />
         <div className="flex-1">
           <main className="container mx-auto px-4 py-8">
             {showForm ? (
