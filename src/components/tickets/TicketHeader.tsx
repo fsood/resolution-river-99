@@ -22,18 +22,16 @@ export const TicketHeader = ({ tickets }: TicketHeaderProps) => {
 
   return (
     <div className="flex items-center justify-between border-b pb-4">
-      <div className="flex items-center gap-4">
-        <h1 className="text-2xl font-bold text-primary">Support Desk</h1>
-        <CollapsibleTrigger asChild>
-          <Button 
-            variant="ghost" 
-            size="sm"
-            onClick={() => setIsNavOpen(!isNavOpen)}
-          >
-            {isNavOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-          </Button>
-        </CollapsibleTrigger>
-      </div>
+      <Collapsible open={isNavOpen} onOpenChange={setIsNavOpen}>
+        <div className="flex items-center gap-4">
+          <h1 className="text-2xl font-bold text-primary">Support Desk</h1>
+          <CollapsibleTrigger asChild>
+            <Button variant="ghost" size="sm">
+              {isNavOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </Button>
+          </CollapsibleTrigger>
+        </div>
+      </Collapsible>
       <div className="flex items-center gap-2">
         <Button variant="outline" size="icon">
           <Bell className="h-4 w-4" />
