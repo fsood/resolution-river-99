@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Tickets from "./pages/Tickets";
 import Contacts from "./pages/Contacts";
+import Companies from "./pages/Companies";
 import Solutions from "./pages/Solutions";
 import Analytics from "./pages/Analytics";
 import Admin from "./pages/Admin";
@@ -24,6 +25,7 @@ const App = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/tickets" element={<Tickets />} />
             <Route path="/contacts" element={<Contacts />} />
+            <Route path="/companies" element={<Companies />} />
             <Route path="/solutions" element={<Solutions />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/admin" element={<Admin />} />
