@@ -25,7 +25,7 @@ export const ContactFilters = ({
   contacts,
   onFilterChange,
 }: ContactFiltersProps) => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false); // Filters start collapsed
   const { setFilterCreatedAt, setFilterCompany } = onFilterChange;
 
   const handleExport = () => {
@@ -88,14 +88,14 @@ export const ContactFilters = ({
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4" />
             <h3 className="text-lg font-medium">Filters</h3>
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" size="sm" className="ml-2">
+                {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+              </Button>
+            </CollapsibleTrigger>
           </div>
-          <CollapsibleTrigger asChild>
-            <Button variant="ghost" size="sm">
-              {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-            </Button>
-          </CollapsibleTrigger>
         </div>
-        
+
         <CollapsibleContent>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Select onValueChange={setFilterCreatedAt}>

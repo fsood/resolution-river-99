@@ -24,7 +24,7 @@ export const CompanyFilters = ({
   companies,
   onFilterChange,
 }: CompanyFiltersProps) => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);  // Set the filters to be initially closed
   const { setFilterCreatedAt } = onFilterChange;
 
   const handleExport = () => {
@@ -82,6 +82,7 @@ export const CompanyFilters = ({
         <Button onClick={onNewCompany}>New Company</Button>
       </div>
 
+      {/* Filters section */}
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">

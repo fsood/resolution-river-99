@@ -58,7 +58,7 @@ export const ArticleForm = ({ onClose }: ArticleFormProps) => {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <Card className="w-full max-w-2xl mx-auto">
+      <Card className="w-full max-w-2xl mx-auto max-h-[90vh] overflow-y-auto">
         <form onSubmit={handleSubmit}>
           <CardHeader>
             <CardTitle>Create New Article</CardTitle>
@@ -85,7 +85,7 @@ export const ArticleForm = ({ onClose }: ArticleFormProps) => {
                 <SelectTrigger>
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white"> {/* Added solid background color */}
                   <SelectItem value="guides">Guides</SelectItem>
                   <SelectItem value="tutorials">Tutorials</SelectItem>
                   <SelectItem value="best-practices">Best Practices</SelectItem>
@@ -93,6 +93,7 @@ export const ArticleForm = ({ onClose }: ArticleFormProps) => {
                 </SelectContent>
               </Select>
             </div>
+
 
             <div className="space-y-2">
               <label className="text-sm font-medium">Content*</label>
