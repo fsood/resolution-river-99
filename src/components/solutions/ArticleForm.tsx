@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardHeader,
@@ -25,6 +26,7 @@ interface ArticleFormProps {
 
 export const ArticleForm = ({ onClose }: ArticleFormProps) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [formData, setFormData] = React.useState({
     title: "",
     category: "",
@@ -53,7 +55,7 @@ export const ArticleForm = ({ onClose }: ArticleFormProps) => {
         ? "Draft saved successfully" 
         : "Article created successfully",
     });
-    onClose();
+    navigate("/solutions");
   };
 
   return (
