@@ -17,7 +17,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
 } from "@/components/ui/sidebar";
 
 const menuItems = [
@@ -56,11 +55,6 @@ const menuItems = [
 export function AppSidebar() {
   return (
     <Sidebar>
-      <SidebarTrigger>
-        <button className="fixed left-4 top-4 z-50 lg:hidden">
-          <Menu className="h-6 w-6" />
-        </button>
-      </SidebarTrigger>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>

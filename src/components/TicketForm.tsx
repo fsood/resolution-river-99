@@ -102,14 +102,16 @@ export const TicketForm = ({ onClose, onSubmit }: TicketFormProps) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Type</label>
+              <label className="text-sm font-medium">Type</label>
               <Select onValueChange={(value) => handleChange("type", value)}>
-                <SelectTrigger>
+                <SelectTrigger
+                  className="w-full justify-start text-left font-normal"
+                >
                   <SelectValue placeholder="Select type" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white shadow-md rounded-md border border-gray-300">
                   <SelectItem value="problem">Problem</SelectItem>
                   <SelectItem value="question">Question</SelectItem>
                   <SelectItem value="incident">Incident</SelectItem>
@@ -127,25 +129,25 @@ export const TicketForm = ({ onClose, onSubmit }: TicketFormProps) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Priority</label>
-              <Select onValueChange={(value) => handleChange("priority", value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select priority" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="low">Low</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="high">
-                    <div className="flex items-center gap-2">
-                      <AlertCircle className="h-4 w-4 text-red-500" />
-                      High
-                    </div>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="space-y-4">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700">Priority</label>
+            <Select onValueChange={(value) => handleChange("priority", value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select priority" />
+              </SelectTrigger>
+              <SelectContent className="bg-white shadow-lg border border-gray-200 rounded-md">
+                <SelectItem value="low">Low</SelectItem>
+                <SelectItem value="medium">Medium</SelectItem>
+                <SelectItem value="high">
+                  <div className="flex items-center gap-2">
+                    <AlertCircle className="h-4 w-4 text-red-500" />
+                    High
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">Agent</label>

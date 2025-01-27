@@ -22,7 +22,7 @@ interface TicketFiltersProps {
 }
 
 export const TicketFilters = ({ onFilterChange, tickets }: TicketFiltersProps) => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const {
     setFilterCreatedAt,
     setFilterClosedAt,
@@ -30,20 +30,22 @@ export const TicketFilters = ({ onFilterChange, tickets }: TicketFiltersProps) =
     setFilterAgent,
     setFilterType,
     setFilterPriority,
-    setFilterStatus
+    setFilterStatus,
   } = onFilterChange;
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-medium">Filters</h3>
-        <CollapsibleTrigger asChild>
-          <Button variant="ghost" size="sm">
-            {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-          </Button>
-        </CollapsibleTrigger>
+        <div className="flex items-center gap-2">
+          <h3 className="text-lg font-medium">Filters</h3>
+          <CollapsibleTrigger asChild>
+            <Button variant="ghost" size="sm">
+              {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </Button>
+          </CollapsibleTrigger>
+        </div>
       </div>
-      
+
       <CollapsibleContent>
         <div className="space-y-4">
           <div className="space-y-2">
@@ -61,7 +63,7 @@ export const TicketFilters = ({ onFilterChange, tickets }: TicketFiltersProps) =
               <PopoverContent className="w-auto p-0 bg-white" align="start">
                 <Calendar
                   mode="single"
-                  onSelect={(date) => setFilterCreatedAt(date ? format(date, 'yyyy-MM-dd') : '')}
+                  onSelect={(date) => setFilterCreatedAt(date ? format(date, "yyyy-MM-dd") : "")}
                 />
               </PopoverContent>
             </Popover>
@@ -82,7 +84,7 @@ export const TicketFilters = ({ onFilterChange, tickets }: TicketFiltersProps) =
               <PopoverContent className="w-auto p-0 bg-white" align="start">
                 <Calendar
                   mode="single"
-                  onSelect={(date) => setFilterClosedAt(date ? format(date, 'yyyy-MM-dd') : '')}
+                  onSelect={(date) => setFilterClosedAt(date ? format(date, "yyyy-MM-dd") : "")}
                 />
               </PopoverContent>
             </Popover>
@@ -93,8 +95,10 @@ export const TicketFilters = ({ onFilterChange, tickets }: TicketFiltersProps) =
               <SelectValue placeholder="Filter by Company" />
             </SelectTrigger>
             <SelectContent className="bg-white">
-              {Array.from(new Set(tickets.map(t => t.company))).map(company => (
-                <SelectItem key={company} value={company}>{company}</SelectItem>
+              {Array.from(new Set(tickets.map((t) => t.company))).map((company) => (
+                <SelectItem key={company} value={company}>
+                  {company}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -104,8 +108,10 @@ export const TicketFilters = ({ onFilterChange, tickets }: TicketFiltersProps) =
               <SelectValue placeholder="Filter by Agent" />
             </SelectTrigger>
             <SelectContent className="bg-white">
-              {Array.from(new Set(tickets.filter(t => t.agent).map(t => t.agent!))).map(agent => (
-                <SelectItem key={agent} value={agent}>{agent}</SelectItem>
+              {Array.from(new Set(tickets.filter((t) => t.agent).map((t) => t.agent!))).map((agent) => (
+                <SelectItem key={agent} value={agent}>
+                  {agent}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
