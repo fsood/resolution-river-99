@@ -16,7 +16,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "@/components/ui/use-toast";
+import { Switch } from "@/components/ui/switch";
+import { useToast } from "@/hooks/use-toast";
 
 interface ArticleFormProps {
   onClose: () => void;
@@ -29,6 +30,7 @@ export const ArticleForm = ({ onClose }: ArticleFormProps) => {
     category: "",
     content: "",
     tags: "",
+    isDraft: false,
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -47,7 +49,9 @@ export const ArticleForm = ({ onClose }: ArticleFormProps) => {
     
     toast({
       title: "Success",
-      description: "Article created successfully",
+      description: formData.isDraft 
+        ? "Draft saved successfully" 
+        : "Article created successfully",
     });
     onClose();
   };
@@ -112,12 +116,30 @@ export const ArticleForm = ({ onClose }: ArticleFormProps) => {
                 placeholder="Enter tags separated by commas"
               />
             </div>
+
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="draft-mode"
+                checked={formData.isDraft}
+                onCheckedChange={(checked) =>
+                  setFormData({ ...formData, isDraft: checked })
+                }
+              />
+              <label
+                htmlFor="draft-mode"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Save as draft
+              </label>
+            </div>
           </CardContent>
           <CardFooter className="flex justify-end space-x-2">
             <Button variant="outline" onClick={onClose} type="button">
               Cancel
             </Button>
-            <Button type="submit">Create Article</Button>
+            <Button type="submit">
+              {formData.isDraft ? "Save Draft" : "Create Article"}
+            </Button>
           </CardFooter>
         </form>
       </Card>

@@ -6,10 +6,12 @@ import { Plus, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ArticleForm } from "@/components/solutions/ArticleForm";
 import { ArticleList } from "@/components/solutions/ArticleList";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Solutions = () => {
   const [showArticleForm, setShowArticleForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeTab, setActiveTab] = useState("all");
 
   return (
     <SidebarProvider>
@@ -22,19 +24,12 @@ const Solutions = () => {
                 <SidebarTrigger />
                 <h1 className="text-2xl font-bold text-primary">Solutions</h1>
               </div>
-              <Button
-                onClick={() => setShowArticleForm(true)}
-                className="flex items-center gap-2"
-              >
-                <Plus className="h-4 w-4" />
-                New Article
-              </Button>
             </div>
           </header>
 
           <main className="container mx-auto px-4 py-8">
-            <div className="mb-6">
-              <div className="relative">
+            <div className="flex items-center justify-between mb-6">
+              <div className="relative flex-1 max-w-md">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <Input
                   type="text"
@@ -44,9 +39,27 @@ const Solutions = () => {
                   className="pl-10"
                 />
               </div>
+              <Button
+                onClick={() => setShowArticleForm(true)}
+                className="ml-4 flex items-center gap-2"
+              >
+                <Plus className="h-4 w-4" />
+                New Article
+              </Button>
             </div>
 
-            <ArticleList searchQuery={searchQuery} />
+            <Tabs defaultValue="all" className="w-full">
+              <TabsList className="mb-6">
+                <TabsTrigger value="all">All Articles</TabsTrigger>
+                <TabsTrigger value="drafts">My Drafts</TabsTrigger>
+              </TabsList>
+              <TabsContent value="all">
+                <ArticleList searchQuery={searchQuery} showDraftsOnly={false} />
+              </TabsContent>
+              <TabsContent value="drafts">
+                <ArticleList searchQuery={searchQuery} showDraftsOnly={true} />
+              </TabsContent>
+            </Tabs>
 
             {showArticleForm && (
               <ArticleForm onClose={() => setShowArticleForm(false)} />
