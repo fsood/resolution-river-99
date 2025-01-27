@@ -7,6 +7,7 @@ import {
   ChartBar,
   UserCog,
   Menu,
+  Users,
 } from "lucide-react";
 import {
   Sidebar,
@@ -18,6 +19,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const menuItems = [
   {
@@ -29,11 +36,6 @@ const menuItems = [
     title: "Tickets",
     icon: Ticket,
     path: "/tickets",
-  },
-  {
-    title: "Contacts & Companies",
-    icon: Building2,
-    path: "/contacts",
   },
   {
     title: "Solutions",
@@ -70,6 +72,32 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              <SidebarMenuItem>
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="w-full">
+                    <SidebarMenuButton>
+                      <div className="flex items-center gap-2 w-full">
+                        <Building2 className="h-4 w-4" />
+                        <span>Contacts & Companies</span>
+                      </div>
+                    </SidebarMenuButton>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem>
+                      <Link to="/contacts" className="flex items-center gap-2 w-full">
+                        <Users className="h-4 w-4" />
+                        Contacts
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link to="/companies" className="flex items-center gap-2 w-full">
+                        <Building2 className="h-4 w-4" />
+                        Companies
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
