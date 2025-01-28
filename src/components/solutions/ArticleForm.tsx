@@ -5,19 +5,14 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { FormHeader } from "./article-form/FormHeader";
+import { TitleField } from "./article-form/TitleField";
+import { CategoryField } from "./article-form/CategoryField";
+import { ContentField } from "./article-form/ContentField";
+import { TagsField } from "./article-form/TagsField";
+import { DraftSwitch } from "./article-form/DraftSwitch";
 
 interface ArticleFormProps {
   onClose: () => void;
@@ -45,7 +40,6 @@ export const ArticleForm = ({ onClose }: ArticleFormProps) => {
       return;
     }
 
-    // Get existing articles or initialize empty array
     const existingArticles = JSON.parse(localStorage.getItem("articles") || "[]");
     const newArticle = {
       ...formData,
@@ -53,7 +47,6 @@ export const ArticleForm = ({ onClose }: ArticleFormProps) => {
       createdAt: new Date().toISOString(),
     };
     
-    // Add new article to array and save back to localStorage
     localStorage.setItem("articles", JSON.stringify([...existingArticles, newArticle]));
     
     toast({
@@ -67,86 +60,29 @@ export const ArticleForm = ({ onClose }: ArticleFormProps) => {
 
   return (
     <Card className="w-full max-w-2xl mx-auto">
-      <div className="p-4 border-b">
-        <Button
-          variant="ghost"
-          onClick={() => navigate("/solutions")}
-          className="flex items-center gap-2"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Solutions
-        </Button>
-      </div>
+      <FormHeader />
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-6 pt-6">
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Title*</label>
-            <Input
-              value={formData.title}
-              onChange={(e) =>
-                setFormData({ ...formData, title: e.target.value })
-              }
-              placeholder="Article title"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Category</label>
-            <Select
-              onValueChange={(value) =>
-                setFormData({ ...formData, category: value })
-              }
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="guides">Guides</SelectItem>
-                <SelectItem value="tutorials">Tutorials</SelectItem>
-                <SelectItem value="best-practices">Best Practices</SelectItem>
-                <SelectItem value="case-studies">Case Studies</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Content*</label>
-            <Textarea
-              value={formData.content}
-              onChange={(e) =>
-                setFormData({ ...formData, content: e.target.value })
-              }
-              placeholder="Write your article content here..."
-              className="min-h-[200px]"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Tags</label>
-            <Input
-              value={formData.tags}
-              onChange={(e) =>
-                setFormData({ ...formData, tags: e.target.value })
-              }
-              placeholder="Enter tags separated by commas"
-            />
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="draft-mode"
-              checked={formData.isDraft}
-              onCheckedChange={(checked) =>
-                setFormData({ ...formData, isDraft: checked })
-              }
-            />
-            <label
-              htmlFor="draft-mode"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Save as draft
-            </label>
-          </div>
+          <TitleField
+            value={formData.title}
+            onChange={(value) => setFormData({ ...formData, title: value })}
+          />
+          <CategoryField
+            value={formData.category}
+            onChange={(value) => setFormData({ ...formData, category: value })}
+          />
+          <ContentField
+            value={formData.content}
+            onChange={(value) => setFormData({ ...formData, content: value })}
+          />
+          <TagsField
+            value={formData.tags}
+            onChange={(value) => setFormData({ ...formData, tags: value })}
+          />
+          <DraftSwitch
+            checked={formData.isDraft}
+            onChange={(checked) => setFormData({ ...formData, isDraft: checked })}
+          />
         </CardContent>
         <CardFooter className="flex justify-end space-x-2 border-t pt-6">
           <Button type="submit">
