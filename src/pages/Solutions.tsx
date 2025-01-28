@@ -7,11 +7,11 @@ import { Input } from "@/components/ui/input";
 import { ArticleForm } from "@/components/solutions/ArticleForm";
 import { ArticleList } from "@/components/solutions/ArticleList";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useNavigate, Routes, Route } from "react-router-dom";
 
-const Solutions = () => {
-  const [showArticleForm, setShowArticleForm] = useState(false);
+const SolutionsMain = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState("all");
+  const navigate = useNavigate();
 
   return (
     <SidebarProvider>
@@ -40,7 +40,7 @@ const Solutions = () => {
                 />
               </div>
               <Button
-                onClick={() => setShowArticleForm(true)}
+                onClick={() => navigate("/solutions/new")}
                 className="ml-4 flex items-center gap-2"
               >
                 <Plus className="h-4 w-4" />
@@ -60,14 +60,44 @@ const Solutions = () => {
                 <ArticleList searchQuery={searchQuery} showDraftsOnly={true} />
               </TabsContent>
             </Tabs>
-
-            {showArticleForm && (
-              <ArticleForm onClose={() => setShowArticleForm(false)} />
-            )}
           </main>
         </div>
       </div>
     </SidebarProvider>
+  );
+};
+
+const NewArticlePage = () => {
+  const navigate = useNavigate();
+  
+  return (
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full">
+        <AppSidebar />
+        <div className="flex-1">
+          <header className="bg-white border-b sticky top-0 z-10">
+            <div className="container mx-auto px-4 py-4">
+              <div className="flex items-center gap-2">
+                <SidebarTrigger />
+                <h1 className="text-2xl font-bold text-primary">New Article</h1>
+              </div>
+            </div>
+          </header>
+          <main className="container mx-auto px-4 py-8">
+            <ArticleForm onClose={() => navigate("/solutions")} />
+          </main>
+        </div>
+      </div>
+    </SidebarProvider>
+  );
+};
+
+const Solutions = () => {
+  return (
+    <Routes>
+      <Route path="/" element={<SolutionsMain />} />
+      <Route path="/new" element={<NewArticlePage />} />
+    </Routes>
   );
 };
 
