@@ -2,8 +2,6 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardHeader,
-  CardTitle,
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
@@ -19,6 +17,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 interface ArticleFormProps {
   onClose: () => void;
@@ -68,11 +67,18 @@ export const ArticleForm = ({ onClose }: ArticleFormProps) => {
 
   return (
     <Card className="w-full max-w-2xl mx-auto">
+      <div className="p-4 border-b">
+        <Button
+          variant="ghost"
+          onClick={() => navigate("/solutions")}
+          className="flex items-center gap-2"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Solutions
+        </Button>
+      </div>
       <form onSubmit={handleSubmit}>
-        <CardHeader>
-          <CardTitle>Create New Article</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-6 pt-6">
           <div className="space-y-2">
             <label className="text-sm font-medium">Title*</label>
             <Input
@@ -143,9 +149,6 @@ export const ArticleForm = ({ onClose }: ArticleFormProps) => {
           </div>
         </CardContent>
         <CardFooter className="flex justify-end space-x-2 border-t pt-6">
-          <Button variant="outline" onClick={onClose} type="button">
-            Cancel
-          </Button>
           <Button type="submit">
             {formData.isDraft ? "Save Draft" : "Publish Article"}
           </Button>
