@@ -1,8 +1,14 @@
-import React, { useEffect } from "react";
+import React from "react";
 import type { Company } from "@/types/company";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Pencil, Trash } from "lucide-react";
+import { MoreVertical, Pencil, Trash } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface CompanyListProps {
   companies: Company[];
@@ -23,59 +29,92 @@ export const CompanyList = ({
   onEditCompany,
   contactsCount,
 }: CompanyListProps) => {
-  // Save companies to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem('companies', JSON.stringify(companies));
-  }, [companies]);
-
-  const handleCompanySelection = (companyId: string) => {
-    if (selectedCompanies.includes(companyId)) {
-      setSelectedCompanies(selectedCompanies.filter((id) => id !== companyId));
+  const handleSelectCompany = (id: string) => {
+    if (selectedCompanies.includes(id)) {
+      setSelectedCompanies(selectedCompanies.filter((companyId) => companyId !== id));
     } else {
-      setSelectedCompanies([...selectedCompanies, companyId]);
+      setSelectedCompanies([...selectedCompanies, id]);
+    }
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedCompanies(companies.map((company) => company.id));
+    } else {
+      setSelectedCompanies([]);
     }
   };
 
   return (
-    <div className="space-y-4">
-      {companies.map((company) => (
-        <Card key={company.id} className="flex justify-between items-center p-4">
-          <div className="flex items-center gap-4">
-            <input
-              type="checkbox"
-              checked={selectedCompanies.includes(company.id)}
-              onChange={() => handleCompanySelection(company.id)}
-              className="h-4 w-4"
-            />
-            <div>
-              <h3 className="text-lg font-semibold">{company.name}</h3>
-              <p className="text-sm text-gray-500">
-                Contacts: {contactsCount[company.id] || 0}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center space-x-2">
-            {onEditCompany && (
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => onEditCompany(company)}
-              >
-                <Pencil className="h-4 w-4" />
-              </Button>
-            )}
-            <Button
-              variant="destructive"
-              size="icon"
-              onClick={() => onDeleteCompany(company.id)}
-            >
-              <Trash className="h-4 w-4" />
-            </Button>
-          </div>
-        </Card>
-      ))}
+    <div className="space-y-1">
+      <table className="w-full">
+        <thead>
+          <tr className="border-b">
+            <th className="w-8 py-3 px-4">
+              <Checkbox
+                checked={
+                  selectedCompanies.length === companies.length && companies.length > 0
+                }
+                ref={(el) => {
+                  if (el) {
+                    (el as HTMLInputElement).indeterminate =
+                      selectedCompanies.length > 0 &&
+                      selectedCompanies.length < companies.length;
+                  }
+                }}
+                onCheckedChange={(checked) => handleSelectAll(!!checked)}
+              />
+            </th>
+            <th className="text-left py-3 px-4">Company</th>
+            <th className="text-left py-3 px-4">Industry</th>
+            <th className="text-left py-3 px-4">Renewal Date</th>
+            <th className="text-left py-3 px-4">Contacts</th>
+            <th className="w-8 py-3 px-4"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {companies.map((company) => (
+            <tr key={company.id} className="border-b hover:bg-muted/50">
+              <td className="py-3 px-4">
+                <Checkbox
+                  checked={selectedCompanies.includes(company.id)}
+                  onCheckedChange={() => handleSelectCompany(company.id)}
+                />
+              </td>
+              <td className="py-3 px-4">{company.name}</td>
+              <td className="py-3 px-4">{company.industry}</td>
+              <td className="py-3 px-4">{company.renewalDate}</td>
+              <td className="py-3 px-4">{contactsCount[company.id]}</td>
+              <td className="py-3 px-4">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                      <MoreVertical className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    {onEditCompany && (
+                      <DropdownMenuItem onClick={() => onEditCompany(company)}>
+                        <Pencil className="mr-2 h-4 w-4" />
+                        Edit
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuItem
+                      onClick={() => onDeleteCompany(company.id)}
+                      className="text-destructive"
+                    >
+                      <Trash className="mr-2 h-4 w-4" />
+                      Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
       {selectedCompanies.length > 0 && (
-        <div className="flex justify-end">
+        <div className="flex justify-end p-4">
           <Button variant="destructive" onClick={onDeleteSelected}>
             Delete Selected ({selectedCompanies.length})
           </Button>

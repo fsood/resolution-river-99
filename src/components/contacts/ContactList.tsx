@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { MoreVertical, Pencil, Trash } from "lucide-react";
 import type { Contact } from "@/types/contact";
@@ -11,7 +11,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 
 interface ContactListProps {
-  contacts: Contact[];
+  onNewContact: () => void;
   selectedContacts: string[];
   setSelectedContacts: (contacts: string[]) => void;
   onDeleteContact: (id: string) => void;
@@ -20,16 +20,25 @@ interface ContactListProps {
 }
 
 export const ContactList = ({
-  contacts,
   selectedContacts,
   setSelectedContacts,
   onDeleteContact,
   onDeleteSelected,
   onEditContact,
 }: ContactListProps) => {
+  const [contacts, setContacts] = useState<Contact[]>([]);
+
+  // Retrieve contacts from localStorage on component mount
+  useEffect(() => {
+    const storedContacts = localStorage.getItem("contacts");
+    if (storedContacts) {
+      setContacts(JSON.parse(storedContacts));
+    }
+  }, []);
+
   // Save contacts to localStorage whenever they change
   useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
+    localStorage.setItem("contacts", JSON.stringify(contacts));
   }, [contacts]);
 
   const handleSelectContact = (id: string) => {
@@ -40,13 +49,30 @@ export const ContactList = ({
     }
   };
 
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      const allContactIds = contacts.map((contact) => contact.id);
+      setSelectedContacts(allContactIds);
+    } else {
+      setSelectedContacts([]);
+    }
+  };
+
   return (
     <div className="space-y-1">
       <table className="w-full">
         <thead>
           <tr className="border-b">
             <th className="w-8 py-3 px-4">
-              <Checkbox />
+              <Checkbox
+                checked={selectedContacts.length === contacts.length && contacts.length > 0}
+                ref={(el) => {
+                  if (el) {
+                    (el as HTMLInputElement).indeterminate = selectedContacts.length > 0 && selectedContacts.length < contacts.length;
+                  }
+                }}
+                onCheckedChange={(checked) => handleSelectAll(!!checked)}
+              />
             </th>
             <th className="text-left py-3 px-4">Contact</th>
             <th className="text-left py-3 px-4">Title</th>
