@@ -25,6 +25,13 @@ export const CompanyList = ({
     localStorage.setItem('companies', JSON.stringify(companies));
   }, [companies]);
 
+  const handleCompanySelection = (companyId: string) => {
+    const updatedSelection = selectedCompanies.includes(companyId)
+      ? selectedCompanies.filter((id) => id !== companyId)
+      : [...selectedCompanies, companyId];
+    setSelectedCompanies(updatedSelection);
+  };
+
   return (
     <div className="space-y-4">
       {companies.map((company) => (
@@ -44,13 +51,7 @@ export const CompanyList = ({
             </Button>
             <Button
               variant="outline"
-              onClick={() => {
-                setSelectedCompanies((prev) =>
-                  prev.includes(company.id)
-                    ? prev.filter((id) => id !== company.id)
-                    : [...prev, company.id]
-                );
-              }}
+              onClick={() => handleCompanySelection(company.id)}
             >
               {selectedCompanies.includes(company.id) ? "Deselect" : "Select"}
             </Button>
