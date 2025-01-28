@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { ContactList } from "@/components/contacts/ContactList";
@@ -15,6 +15,14 @@ const Contacts = () => {
   const [filterCreatedAt, setFilterCreatedAt] = useState("");
   const [filterCompany, setFilterCompany] = useState("");
 
+  // Load contacts from localStorage on initial render
+  useEffect(() => {
+    const savedContacts = localStorage.getItem('contacts');
+    if (savedContacts) {
+      setContacts(JSON.parse(savedContacts));
+    }
+  }, []);
+
   const handleNewContact = () => {
     setShowForm(true);
   };
@@ -28,18 +36,24 @@ const Contacts = () => {
       ...contact,
       id: crypto.randomUUID(),
     };
-    setContacts((prev) => [...prev, newContact]);
+    const updatedContacts = [...contacts, newContact];
+    setContacts(updatedContacts);
+    localStorage.setItem('contacts', JSON.stringify(updatedContacts));
   };
 
   const handleDeleteContact = (id: string) => {
-    setContacts((prev) => prev.filter((contact) => contact.id !== id));
+    const updatedContacts = contacts.filter((contact) => contact.id !== id);
+    setContacts(updatedContacts);
+    localStorage.setItem('contacts', JSON.stringify(updatedContacts));
     setSelectedContacts((prev) => prev.filter((contactId) => contactId !== id));
   };
 
   const handleDeleteSelected = () => {
-    setContacts((prev) =>
-      prev.filter((contact) => !selectedContacts.includes(contact.id))
+    const updatedContacts = contacts.filter(
+      (contact) => !selectedContacts.includes(contact.id)
     );
+    setContacts(updatedContacts);
+    localStorage.setItem('contacts', JSON.stringify(updatedContacts));
     setSelectedContacts([]);
   };
 
