@@ -1,9 +1,7 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Edit, Trash2 } from "lucide-react";
+import React, { useEffect } from "react";
 import type { Company } from "@/types/company";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface CompanyListProps {
   companies: Company[];
@@ -22,88 +20,50 @@ export const CompanyList = ({
   onDeleteSelected,
   contactsCount,
 }: CompanyListProps) => {
-  const handleSelectAll = () => {
-    if (selectedCompanies.length === companies.length) {
-      setSelectedCompanies([]);
-    } else {
-      setSelectedCompanies(companies.map((company) => company.id));
-    }
-  };
-
-  const handleSelectCompany = (id: string) => {
-    if (selectedCompanies.includes(id)) {
-      setSelectedCompanies(selectedCompanies.filter((companyId) => companyId !== id));
-    } else {
-      setSelectedCompanies([...selectedCompanies, id]);
-    }
-  };
+  // Save companies to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('companies', JSON.stringify(companies));
+  }, [companies]);
 
   return (
-    <div>
+    <div className="space-y-4">
+      {companies.map((company) => (
+        <Card key={company.id} className="flex justify-between items-center p-4">
+          <CardContent>
+            <div className="flex flex-col">
+              <h3 className="text-lg font-semibold">{company.name}</h3>
+              <p className="text-sm text-gray-500">{company.description}</p>
+              <p className="text-sm text-gray-500">
+                Contacts: {contactsCount[company.id] || 0}
+              </p>
+            </div>
+          </CardContent>
+          <div className="flex items-center space-x-2">
+            <Button variant="outline" onClick={() => onDeleteCompany(company.id)}>
+              Delete
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setSelectedCompanies((prev) =>
+                  prev.includes(company.id)
+                    ? prev.filter((id) => id !== company.id)
+                    : [...prev, company.id]
+                );
+              }}
+            >
+              {selectedCompanies.includes(company.id) ? "Deselect" : "Select"}
+            </Button>
+          </div>
+        </Card>
+      ))}
       {selectedCompanies.length > 0 && (
-        <div className="mb-4">
-          <Button variant="destructive" onClick={onDeleteSelected}>
-            Delete Selected ({selectedCompanies.length})
+        <div className="flex justify-end">
+          <Button variant="outline" onClick={onDeleteSelected}>
+            Delete Selected
           </Button>
         </div>
       )}
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-12">
-              <Checkbox
-                checked={selectedCompanies.length === companies.length && companies.length > 0}
-                onCheckedChange={handleSelectAll}
-              />
-            </TableHead>
-            <TableHead>Company</TableHead>
-            <TableHead>Industry</TableHead>
-            <TableHead>ACC Tier</TableHead>
-            <TableHead>Contacts</TableHead>
-            <TableHead>Renewal Date</TableHead>
-            <TableHead className="w-24">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {companies.map((company) => (
-            <TableRow key={company.id}>
-              <TableCell>
-                <Checkbox
-                  checked={selectedCompanies.includes(company.id)}
-                  onCheckedChange={() => handleSelectCompany(company.id)}
-                />
-              </TableCell>
-              <TableCell>
-                <div className="flex items-center gap-2">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={company.logo} alt={company.name} />
-                    <AvatarFallback>{company.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  {company.name}
-                </div>
-              </TableCell>
-              <TableCell>{company.industry}</TableCell>
-              <TableCell>{company.accTier}</TableCell>
-              <TableCell>{contactsCount[company.id] || 0}</TableCell>
-              <TableCell>{new Date(company.renewalDate).toLocaleDateString()}</TableCell>
-              <TableCell>
-                <div className="flex gap-2">
-                  <Button variant="ghost" size="icon">
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => onDeleteCompany(company.id)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
     </div>
   );
 };

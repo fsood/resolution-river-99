@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Edit, Trash2 } from "lucide-react";
@@ -17,6 +17,14 @@ export const ArticleList = ({ searchQuery, showDraftsOnly }: ArticleListProps) =
     createdAt: string;
     isDraft: boolean;
   }>>([]);
+
+  // Load articles from localStorage on component mount
+  useEffect(() => {
+    const storedArticles = localStorage.getItem('articles');
+    if (storedArticles) {
+      setArticles(JSON.parse(storedArticles));
+    }
+  }, []);
 
   // Group articles by category
   const groupedArticles = React.useMemo(() => {

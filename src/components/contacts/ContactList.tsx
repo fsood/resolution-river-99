@@ -1,7 +1,6 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Edit, Trash2 } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import type { Contact } from "@/types/contact";
 
 interface ContactListProps {
@@ -19,13 +18,10 @@ export const ContactList = ({
   onDeleteContact,
   onDeleteSelected,
 }: ContactListProps) => {
-  const handleSelectAll = () => {
-    if (selectedContacts.length === contacts.length) {
-      setSelectedContacts([]);
-    } else {
-      setSelectedContacts(contacts.map((contact) => contact.id));
-    }
-  };
+  // Save contacts to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
 
   const handleSelectContact = (id: string) => {
     if (selectedContacts.includes(id)) {
@@ -36,63 +32,30 @@ export const ContactList = ({
   };
 
   return (
-    <div>
+    <div className="space-y-4">
+      {contacts.map((contact) => (
+        <Card key={contact.id} className="flex justify-between items-center p-4">
+          <div>
+            <h3 className="text-lg font-semibold">{contact.name}</h3>
+            <p className="text-sm text-gray-500">{contact.email}</p>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Button variant="outline" onClick={() => handleSelectContact(contact.id)}>
+              {selectedContacts.includes(contact.id) ? "Deselect" : "Select"}
+            </Button>
+            <Button variant="destructive" onClick={() => onDeleteContact(contact.id)}>
+              Delete
+            </Button>
+          </div>
+        </Card>
+      ))}
       {selectedContacts.length > 0 && (
-        <div className="mb-4">
-          <Button variant="destructive" onClick={onDeleteSelected}>
-            Delete Selected ({selectedContacts.length})
+        <div className="flex justify-end">
+          <Button variant="outline" onClick={onDeleteSelected}>
+            Delete Selected
           </Button>
         </div>
       )}
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-12">
-              <Checkbox
-                checked={selectedContacts.length === contacts.length && contacts.length > 0}
-                onCheckedChange={handleSelectAll}
-              />
-            </TableHead>
-            <TableHead>Contact</TableHead>
-            <TableHead>Title</TableHead>
-            <TableHead>Company</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Phone</TableHead>
-            <TableHead className="w-24">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {contacts.map((contact) => (
-            <TableRow key={contact.id}>
-              <TableCell>
-                <Checkbox
-                  checked={selectedContacts.includes(contact.id)}
-                  onCheckedChange={() => handleSelectContact(contact.id)}
-                />
-              </TableCell>
-              <TableCell>{contact.name}</TableCell>
-              <TableCell>{contact.title}</TableCell>
-              <TableCell>{contact.company}</TableCell>
-              <TableCell>{contact.email}</TableCell>
-              <TableCell>{contact.phone}</TableCell>
-              <TableCell>
-                <div className="flex gap-2">
-                  <Button variant="ghost" size="icon">
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => onDeleteContact(contact.id)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
     </div>
   );
 };
