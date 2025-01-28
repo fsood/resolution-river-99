@@ -1,22 +1,22 @@
 import React from "react";
 import type { Company } from "@/types/company";
-import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { MoreVertical, Pencil, Trash } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Checkbox } from "@/components/ui/checkbox";
 
 interface CompanyListProps {
   companies: Company[];
   selectedCompanies: string[];
   setSelectedCompanies: (companies: string[]) => void;
+  onEditCompany?: (company: Company) => void;
   onDeleteCompany: (id: string) => void;
   onDeleteSelected: () => void;
-  onEditCompany?: (company: Company) => void;
   contactsCount: Record<string, number>;
 }
 
@@ -24,9 +24,9 @@ export const CompanyList = ({
   companies,
   selectedCompanies,
   setSelectedCompanies,
+  onEditCompany,
   onDeleteCompany,
   onDeleteSelected,
-  onEditCompany,
   contactsCount,
 }: CompanyListProps) => {
   const handleSelectCompany = (id: string) => {
@@ -39,7 +39,8 @@ export const CompanyList = ({
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedCompanies(companies.map((company) => company.id));
+      const allCompanyIds = companies.map((company) => company.id);
+      setSelectedCompanies(allCompanyIds);
     } else {
       setSelectedCompanies([]);
     }
@@ -52,9 +53,7 @@ export const CompanyList = ({
           <tr className="border-b">
             <th className="w-8 py-3 px-4">
               <Checkbox
-                checked={
-                  selectedCompanies.length === companies.length && companies.length > 0
-                }
+                checked={selectedCompanies.length === companies.length && companies.length > 0}
                 ref={(el) => {
                   if (el) {
                     (el as HTMLInputElement).indeterminate =
@@ -65,9 +64,7 @@ export const CompanyList = ({
                 onCheckedChange={(checked) => handleSelectAll(!!checked)}
               />
             </th>
-            <th className="text-left py-3 px-4">Company</th>
-            <th className="text-left py-3 px-4">Industry</th>
-            <th className="text-left py-3 px-4">Renewal Date</th>
+            <th className="text-left py-3 px-4">Company Name</th>
             <th className="text-left py-3 px-4">Contacts</th>
             <th className="w-8 py-3 px-4"></th>
           </tr>
@@ -82,11 +79,9 @@ export const CompanyList = ({
                 />
               </td>
               <td className="py-3 px-4">{company.name}</td>
-              <td className="py-3 px-4">{company.industry}</td>
-              <td className="py-3 px-4">{company.renewalDate}</td>
-              <td className="py-3 px-4">{contactsCount[company.id]}</td>
+              <td className="py-3 px-4">{contactsCount[company.id] || 0}</td>
               <td className="py-3 px-4">
-                <DropdownMenu>
+              <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon">
                       <MoreVertical className="h-4 w-4" />

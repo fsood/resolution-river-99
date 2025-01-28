@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { MoreVertical, Pencil, Trash } from "lucide-react";
 import type { Contact } from "@/types/contact";
@@ -11,36 +11,24 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 
 interface ContactListProps {
-  onNewContact: () => void;
+  contacts: Contact[];
   selectedContacts: string[];
   setSelectedContacts: (contacts: string[]) => void;
   onDeleteContact: (id: string) => void;
   onDeleteSelected: () => void;
+  contactsCount: Record<string, number>;
   onEditContact?: (contact: Contact) => void;
 }
 
 export const ContactList = ({
+  contacts,
   selectedContacts,
   setSelectedContacts,
   onDeleteContact,
   onDeleteSelected,
+  contactsCount,
   onEditContact,
 }: ContactListProps) => {
-  const [contacts, setContacts] = useState<Contact[]>([]);
-
-  // Retrieve contacts from localStorage on component mount
-  useEffect(() => {
-    const storedContacts = localStorage.getItem("contacts");
-    if (storedContacts) {
-      setContacts(JSON.parse(storedContacts));
-    }
-  }, []);
-
-  // Save contacts to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem("contacts", JSON.stringify(contacts));
-  }, [contacts]);
-
   const handleSelectContact = (id: string) => {
     if (selectedContacts.includes(id)) {
       setSelectedContacts(selectedContacts.filter((contactId) => contactId !== id));
@@ -68,7 +56,9 @@ export const ContactList = ({
                 checked={selectedContacts.length === contacts.length && contacts.length > 0}
                 ref={(el) => {
                   if (el) {
-                    (el as HTMLInputElement).indeterminate = selectedContacts.length > 0 && selectedContacts.length < contacts.length;
+                    (el as HTMLInputElement).indeterminate =
+                      selectedContacts.length > 0 &&
+                      selectedContacts.length < contacts.length;
                   }
                 }}
                 onCheckedChange={(checked) => handleSelectAll(!!checked)}

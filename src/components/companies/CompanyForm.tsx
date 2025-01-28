@@ -44,6 +44,7 @@ export const CompanyForm = ({ onClose, onSubmit }: CompanyFormProps) => {
 
     onSubmit({
       ...formData,
+      companyId: "someCompanyId", // Replace with actual companyId
       createdAt: new Date().toISOString(),
     });
     

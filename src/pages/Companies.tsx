@@ -6,26 +6,34 @@ import { CompanyHeader } from "@/components/companies/CompanyHeader";
 import { CompanyFilters } from "@/components/companies/CompanyFilters";
 import { CompanyForm } from "@/components/companies/CompanyForm";
 import type { Company } from "@/types/company";
+import type { Contact } from "@/types/contact";
 
 const Companies = () => {
   const [showForm, setShowForm] = useState(false);
   const [companies, setCompanies] = useState<Company[]>([]);
+  const [contacts, setContacts] = useState<Contact[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCompanies, setSelectedCompanies] = useState<string[]>([]);
   const [filterCreatedAt, setFilterCreatedAt] = useState("");
 
-  // Load companies from localStorage on initial render
+  // Load companies and contacts from localStorage on initial render
   useEffect(() => {
     const savedCompanies = localStorage.getItem("companies");
     if (savedCompanies) {
       setCompanies(JSON.parse(savedCompanies));
     }
+
+    const savedContacts = localStorage.getItem("contacts");
+    if (savedContacts) {
+      setContacts(JSON.parse(savedContacts));
+    }
   }, []);
 
-  // Save companies to localStorage whenever they are updated
+  // Save companies and contacts to localStorage whenever they are updated
   useEffect(() => {
     localStorage.setItem("companies", JSON.stringify(companies));
-  }, [companies]);
+    localStorage.setItem("contacts", JSON.stringify(contacts));
+  }, [companies, contacts]);
 
   const handleNewCompany = () => {
     setShowForm(true);
@@ -58,10 +66,12 @@ const Companies = () => {
     setSelectedCompanies([]);
   };
 
-  // Mock contact count for companies
+  // Calculate contactsCount for each company
   const contactsCount: Record<string, number> = {};
   companies.forEach((company) => {
-    contactsCount[company.id] = Math.floor(Math.random() * 10); // Replace with actual contact count
+    contactsCount[company.id] = contacts.filter(
+      (contact) => contact.companyId === company.id
+    ).length;
   });
 
   return (

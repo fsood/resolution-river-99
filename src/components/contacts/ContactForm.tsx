@@ -7,16 +7,18 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 import type { Contact } from "@/types/contact";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface ContactFormProps {
   onClose: () => void;
   onSubmit: (contact: Omit<Contact, "id">) => void;
+  companies: any[]; // Company data passed from the parent
 }
 
-export const ContactForm = ({ onClose, onSubmit }: ContactFormProps) => {
+export const ContactForm = ({ onClose, onSubmit, companies }: ContactFormProps) => {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: "",
@@ -28,7 +30,7 @@ export const ContactForm = ({ onClose, onSubmit }: ContactFormProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.email) {
+    if (!formData.name || !formData.email || !formData.company) {
       toast({
         title: "Error",
         description: "Please fill in all required fields",
@@ -37,11 +39,13 @@ export const ContactForm = ({ onClose, onSubmit }: ContactFormProps) => {
       return;
     }
 
+    const selectedCompany = companies.find(company => company.name === formData.company);
     onSubmit({
       ...formData,
+      companyId: selectedCompany?.id || "",
       createdAt: new Date().toISOString(),
     });
-    
+
     toast({
       title: "Success",
       description: "Contact created successfully",
@@ -79,12 +83,22 @@ export const ContactForm = ({ onClose, onSubmit }: ContactFormProps) => {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Company</label>
-            <Input
+            <label className="text-sm font-medium">Company*</label>
+            <Select
               value={formData.company}
-              onChange={(e) => handleChange("company", e.target.value)}
-              placeholder="Company name"
-            />
+              onValueChange={(value) => handleChange("company", value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select a company" />
+              </SelectTrigger>
+              <SelectContent>
+                {companies.map((company) => (
+                  <SelectItem key={company.id} value={company.name}>
+                    {company.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-2">

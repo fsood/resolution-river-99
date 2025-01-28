@@ -8,5 +8,7 @@ export interface Company {
   renewalDate: string;
   industry: string;
   accTier: 'basic' | 'premium' | 'enterprise';
+  companyId: string;
   createdAt: string;
+ 
 }
