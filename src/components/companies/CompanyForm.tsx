@@ -46,6 +46,7 @@ export const CompanyForm = ({ onClose, onSubmit }: CompanyFormProps) => {
       ...formData,
       companyId: "someCompanyId", // Replace with actual companyId
       createdAt: new Date().toISOString(),
+      Contacts: [], // Initialize with empty contacts array
     });
     
     toast({
