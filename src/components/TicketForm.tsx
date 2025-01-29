@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,18 +16,23 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { AlertCircle } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import type { Ticket } from "@/types/ticket";
+import type { Company } from "@/types/company";
+import type { Contact } from "@/types/contact";
+import { AlertCircle } from "lucide-react";
 
 interface TicketFormProps {
   onClose: () => void;
   onSubmit: (ticket: Omit<Ticket, "id">) => void;
+  companies: any[];
 }
 
 export const TicketForm = ({ onClose, onSubmit }: TicketFormProps) => {
   const { toast } = useToast();
-  const [formData, setFormData] = React.useState({
+  const [companies, setCompanies] = useState<Company[]>([]);
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [formData, setFormData] = useState({
     subject: "",
     company: "",
     contact: "",
@@ -38,6 +43,21 @@ export const TicketForm = ({ onClose, onSubmit }: TicketFormProps) => {
     agent: "",
     description: "",
   });
+
+  // Load companies from localStorage
+  useEffect(() => {
+    const storedCompanies = JSON.parse(localStorage.getItem("companies") || "[]");
+    setCompanies(storedCompanies);
+    console.log("Loaded Companies:", storedCompanies);
+  }, []);
+
+  // Update contacts when company changes
+    const handleCompanyChange = (companyId: string) => {
+      setFormData((prev) => ({ ...prev, company: companyId, contact: "" }));
+      
+      const selectedCompany = companies.find((c) => c.id === companyId);
+      setContacts(selectedCompany?.Contacts || []);
+    };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,21 +70,21 @@ export const TicketForm = ({ onClose, onSubmit }: TicketFormProps) => {
       return;
     }
 
+    const selectedCompany = companies.find(company => company.id === formData.company);
     onSubmit({
       ...formData,
+      companyId: selectedCompany?.id || "",
       createdAt: new Date().toISOString(),
     } as Omit<Ticket, "id">);
     
-    toast({
-      title: "Success",
-      description: "Ticket created successfully",
-    });
+    toast({ title: "Success", description: "Ticket created successfully" });
     onClose();
   };
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
+
 
   return (
     <Card className="w-full max-w-2xl mx-auto">
@@ -82,25 +102,51 @@ export const TicketForm = ({ onClose, onSubmit }: TicketFormProps) => {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+        {/* Company Dropdown */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Company*</label>
-              <Input
+              <label className="text-sm font-medium">Company*</label>
+              <Select
                 value={formData.company}
-                onChange={(e) => handleChange("company", e.target.value)}
-                placeholder="Company name"
-              />
+                onValueChange={(value) => handleChange("company", value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a company" />
+                </SelectTrigger>
+                <SelectContent>
+                  {companies.length > 0 ? (
+                    companies.map((company) => (
+                      <SelectItem key={company.id} value={company.id}>
+                        {company.name}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <SelectItem value="no-companies" disabled>No companies available</SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Contact*</label>
-              <Input
-                value={formData.contact}
-                onChange={(e) => handleChange("contact", e.target.value)}
-                placeholder="Contact person"
-              />
-            </div>
+            {/* Contact Dropdown (Filtered by Selected Company) */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Contact*</label>
+            <Select
+              value={formData.contact}
+              onValueChange={(value) => handleChange("contact", value)}
+              disabled={!formData.company || contacts.length === 0}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder={contacts.length > 0 ? "Select a contact" : "No contacts available"} />
+              </SelectTrigger>
+              <SelectContent>
+                {contacts.map((contact) => (
+                  <SelectItem key={contact.id} value={contact.id}>
+                    {contact.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
+          
 
           <div className="space-y-4">
             <div className="space-y-2">

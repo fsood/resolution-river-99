@@ -1,3 +1,5 @@
+import { Contact } from './contact';
+
 export interface Company {
   id: string;
   name: string;
@@ -10,5 +12,5 @@ export interface Company {
   accTier: 'basic' | 'premium' | 'enterprise';
   companyId: string;
   createdAt: string;
- 
+  Contacts: Contact[];
 }

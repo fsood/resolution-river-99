@@ -11,6 +11,7 @@ import { TicketHeader } from "@/components/tickets/TicketHeader";
 const Tickets = () => {
   const [showForm, setShowForm] = useState(false);
   const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [companies, setCompanies] = useState<any[]>([]); // To store company data for selecting in contact form
   const location = useLocation();
 
   // Load tickets from localStorage on component mount
@@ -52,6 +53,7 @@ const Tickets = () => {
                     <TicketForm
                       onClose={() => setShowForm(false)}
                       onSubmit={handleCreateTicket}
+                      companies={companies}
                     />
                     </div>
               </div>

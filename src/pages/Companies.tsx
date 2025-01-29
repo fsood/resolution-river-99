@@ -68,11 +68,13 @@ const Companies = () => {
 
   // Calculate contactsCount for each company
   const contactsCount: Record<string, number> = {};
-  companies.forEach((company) => {
-    contactsCount[company.id] = contacts.filter(
-      (contact) => contact.companyId === company.id
-    ).length;
-  });
+
+// Iterate through each company and count how many contacts belong to it.
+companies.forEach((company) => {
+  contactsCount[company.id] = contacts.filter(
+    (contact) => contact.companyId === company.id
+  ).length;
+});
 
   return (
     <SidebarProvider>

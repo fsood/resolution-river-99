@@ -20,6 +20,8 @@ const Contacts = () => {
   useEffect(() => {
     const savedContacts = localStorage.getItem('contacts');
     const savedCompanies = localStorage.getItem('companies');
+    console.log("Loaded Companies:", savedCompanies);
+
     
     if (savedContacts) {
       setContacts(JSON.parse(savedContacts));
