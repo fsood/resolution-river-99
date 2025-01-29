@@ -151,7 +151,7 @@ export const TicketForm = ({ onClose, onSubmit, companies }: TicketFormProps) =>
                     <Plus className="h-4 w-4" />
                   </Button>
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent className="max-h-[100vh] overflow-y-auto">
                   <CompanyForm
                     onClose={() => setShowCompanyForm(false)}
                     onSubmit={handleNewCompanySubmit}
