@@ -50,6 +50,7 @@ export const TicketForm = ({ onClose, onSubmit, companies }: TicketFormProps) =>
     priority: "",
     agent: "",
     description: "",
+    documentUrl: "", // Added new field for document URL
   });
 
   // Load contacts from localStorage
@@ -94,7 +95,8 @@ export const TicketForm = ({ onClose, onSubmit, companies }: TicketFormProps) =>
   };
 
   const handleNewCompanySubmit = (company: Omit<Company, "id">) => {
-    const updatedCompanies = [...companies, { ...company, id: crypto.randomUUID() }];
+    const newCompany = { ...company, id: crypto.randomUUID() };
+    const updatedCompanies = [...companies, newCompany];
     localStorage.setItem("companies", JSON.stringify(updatedCompanies));
     setShowCompanyForm(false);
     toast({ title: "Success", description: "Company added successfully" });
@@ -263,6 +265,16 @@ export const TicketForm = ({ onClose, onSubmit, companies }: TicketFormProps) =>
                 </Button>
               </div>
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Document URL</label>
+            <Input
+              value={formData.documentUrl}
+              onChange={(e) => handleChange("documentUrl", e.target.value)}
+              placeholder="Enter document URL"
+              type="url"
+            />
           </div>
 
           <div className="space-y-2">
