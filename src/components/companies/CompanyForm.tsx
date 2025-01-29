@@ -1,3 +1,4 @@
+import React, { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { Company } from "@/types/company";
-import { useState } from "react";
+import { Image } from "lucide-react";
 
 interface CompanyFormProps {
   onClose: () => void;
@@ -20,6 +21,7 @@ interface CompanyFormProps {
 
 export const CompanyForm = ({ onClose, onSubmit }: CompanyFormProps) => {
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     name: "",
     logo: "",
@@ -30,6 +32,29 @@ export const CompanyForm = ({ onClose, onSubmit }: CompanyFormProps) => {
     industry: "",
     accTier: "basic" as Company["accTier"],
   });
+  const [logoPreview, setLogoPreview] = useState<string>("");
+
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.match(/image\/(png|jpeg|jpg)/i)) {
+        toast({
+          title: "Error",
+          description: "Please upload a PNG, JPG, or JPEG image",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setFormData(prev => ({ ...prev, logo: base64String }));
+        setLogoPreview(base64String);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,16 +69,10 @@ export const CompanyForm = ({ onClose, onSubmit }: CompanyFormProps) => {
 
     onSubmit({
       ...formData,
-      companyId: "someCompanyId", // Replace with actual companyId
+      companyId: crypto.randomUUID(),
       createdAt: new Date().toISOString(),
-      Contacts: [], // Initialize with empty contacts array
+      Contacts: [],
     });
-    
-    toast({
-      title: "Success",
-      description: "Company created successfully",
-    });
-    onClose();
   };
 
   const handleChange = (field: string, value: string) => {
@@ -73,12 +92,33 @@ export const CompanyForm = ({ onClose, onSubmit }: CompanyFormProps) => {
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-2">
-            <label className="text-sm font-medium">Company Logo URL</label>
-            <Input
-              value={formData.logo}
-              onChange={(e) => handleChange("logo", e.target.value)}
-              placeholder="Logo URL"
-            />
+            <label className="text-sm font-medium">Company Logo</label>
+            <div className="flex items-center gap-4">
+              <input
+                type="file"
+                ref={fileInputRef}
+                accept="image/png,image/jpeg,image/jpg"
+                onChange={handleLogoChange}
+                className="hidden"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Image className="h-4 w-4 mr-2" />
+                Upload Logo
+              </Button>
+              {logoPreview && (
+                <div className="w-16 h-16 relative">
+                  <img
+                    src={logoPreview}
+                    alt="Company logo preview"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="space-y-2">
