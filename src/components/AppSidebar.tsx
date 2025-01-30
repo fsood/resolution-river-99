@@ -6,6 +6,7 @@ import {
   LifeBuoy,
   UserCog,
   Users,
+  BarChart2,
 } from "lucide-react";
 import {
   Sidebar,
@@ -39,6 +40,11 @@ const mainMenuItems = [
     title: "Solutions",
     icon: LifeBuoy,
     path: "/solutions",
+  },
+  {
+    title: "Analytics",
+    icon: BarChart2,
+    path: "/analytics",
   },
   {
     title: "Admin",
