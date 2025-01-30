@@ -17,6 +17,7 @@ import { Image } from "lucide-react";
 interface CompanyFormProps {
   onClose: () => void;
   onSubmit: (company: Omit<Company, "id">) => void;
+  companyId?: string | null;
 }
 
 export const CompanyForm = ({ onClose, onSubmit }: CompanyFormProps) => {
