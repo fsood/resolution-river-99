@@ -4,7 +4,6 @@ import {
   Ticket,
   Building2,
   LifeBuoy,
-  ChartBar,
   UserCog,
   Users,
 } from "lucide-react";
@@ -40,11 +39,6 @@ const mainMenuItems = [
     title: "Solutions",
     icon: LifeBuoy,
     path: "/solutions",
-  },
-  {
-    title: "Analytics & Reports",
-    icon: ChartBar,
-    path: "/analytics",
   },
   {
     title: "Admin",
