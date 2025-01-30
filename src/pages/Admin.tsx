@@ -1,5 +1,8 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
+import { TeamSection } from "@/components/admin/TeamSection";
+import { ChannelsSection } from "@/components/admin/ChannelsSection";
+import { WorkflowsSection } from "@/components/admin/WorkflowsSection";
 
 const Admin = () => {
   return (
@@ -16,7 +19,11 @@ const Admin = () => {
             </div>
           </header>
           <main className="container mx-auto px-4 py-8">
-            <p>Admin content goes here</p>
+            <div className="space-y-12">
+              <TeamSection />
+              <ChannelsSection />
+              <WorkflowsSection />
+            </div>
           </main>
         </div>
       </div>

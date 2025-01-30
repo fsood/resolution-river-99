@@ -1,13 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   Ticket,
   Building2,
   LifeBuoy,
-  ChartBar,
   UserCog,
-  Menu,
   Users,
+  BarChart2,
 } from "lucide-react";
 import {
   Sidebar,
@@ -26,7 +25,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const menuItems = [
+const mainMenuItems = [
   {
     title: "Dashboard",
     icon: LayoutDashboard,
@@ -43,8 +42,8 @@ const menuItems = [
     path: "/solutions",
   },
   {
-    title: "Analytics & Reports",
-    icon: ChartBar,
+    title: "Analytics",
+    icon: BarChart2,
     path: "/analytics",
   },
   {
@@ -55,6 +54,8 @@ const menuItems = [
 ];
 
 export function AppSidebar() {
+  const location = useLocation();
+
   return (
     <Sidebar>
       <SidebarContent>
@@ -62,10 +63,15 @@ export function AppSidebar() {
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {menuItems.map((item) => (
+              {mainMenuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton>
-                    <Link to={item.path} className="flex items-center gap-2 w-full">
+                    <Link 
+                      to={item.path} 
+                      className={`flex items-center gap-2 w-full ${
+                        location.pathname === item.path ? 'text-primary' : ''
+                      }`}
+                    >
                       <item.icon className="h-4 w-4" />
                       <span>{item.title}</span>
                     </Link>
