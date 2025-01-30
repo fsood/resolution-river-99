@@ -12,7 +12,6 @@ import {
   Mail,
   Phone,
   Facebook,
-  WhatsApp,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -84,7 +83,7 @@ const channelsSection = [
   {
     title: "WhatsApp",
     description: "Integrate your WhatsApp business number to support customers and offer instant resolutions",
-    icon: WhatsApp,
+    icon: MessageSquare,
     path: "/admin/channels/whatsapp",
   },
 ];
