@@ -11,4 +11,5 @@ export interface Ticket {
   description: string;
   createdAt: string;
   closedAt?: string;
+  companyId: string;
 }

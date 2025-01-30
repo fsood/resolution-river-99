@@ -73,6 +73,12 @@ export const CompanyForm = ({ onClose, onSubmit }: CompanyFormProps) => {
       createdAt: new Date().toISOString(),
       Contacts: [],
     });
+
+    toast({
+      title: "Success",
+      description: "Company created successfully",
+    });
+    onClose();
   };
 
   const handleChange = (field: string, value: string) => {

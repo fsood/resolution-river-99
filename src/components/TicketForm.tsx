@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -33,33 +33,50 @@ interface TicketFormProps {
   onClose: () => void;
   onSubmit: (ticket: Omit<Ticket, "id">) => void;
   companies: Company[];
+  setCompanies: Dispatch<SetStateAction<Company[]>>;
 }
 
-export const TicketForm = ({ onClose, onSubmit, companies }: TicketFormProps) => {
+export const TicketForm = ({ onClose, onSubmit }: TicketFormProps) => {
   const { toast } = useToast();
+  const [companies, setCompanies] = useState<Company[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [showCompanyForm, setShowCompanyForm] = useState(false);
   const [showContactForm, setShowContactForm] = useState(false);
-  const [formData, setFormData] = useState({
+
+  const [formData, setFormData] = useState<{
+    subject: string;
+    company: string;
+    contact: string;
+    type: "problem" | "question" | "incident";
+    source: string;
+    status: "open" | "in-progress" | "closed";
+    priority: "high";
+    agent: string;
+    description: string;
+    documentUrl: string;
+  }>({
     subject: "",
     company: "",
     contact: "",
-    type: "",
+    type: "problem", // Default valid value
     source: "",
     status: "open",
-    priority: "",
+    priority: "high",
     agent: "",
     description: "",
-    documentUrl: "", // Added new field for document URL
+    documentUrl: "",
   });
 
-  // Load contacts from localStorage
+  useEffect(() => {
+    const storedCompanies = JSON.parse(localStorage.getItem("companies") || "[]");
+    setCompanies(storedCompanies);
+  }, []);
+
   useEffect(() => {
     const storedContacts = JSON.parse(localStorage.getItem("contacts") || "[]");
     setContacts(storedContacts);
   }, []);
 
-  // Filter contacts based on selected company
   const filteredContacts = contacts.filter(
     (contact) => contact.companyId === formData.company
   );
@@ -80,24 +97,34 @@ export const TicketForm = ({ onClose, onSubmit, companies }: TicketFormProps) =>
     }
 
     const selectedCompany = companies.find(company => company.id === formData.company);
-    onSubmit({
+    const newTicket: Omit<Ticket, "id"> = {
       ...formData,
       companyId: selectedCompany?.id || "",
       createdAt: new Date().toISOString(),
-    } as Omit<Ticket, "id">);
+    };
+
+    const existingTickets: Ticket[] = JSON.parse(localStorage.getItem("tickets") || "[]");
+    const updatedTickets = [...existingTickets, { ...newTicket, id: crypto.randomUUID() }];
     
+    localStorage.setItem("tickets", JSON.stringify(updatedTickets));
+
     toast({ title: "Success", description: "Ticket created successfully" });
+    onSubmit(newTicket);
     onClose();
   };
 
   const handleChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [field]: field === "type" && value === "" ? "problem" : value,
+    }));
   };
 
   const handleNewCompanySubmit = (company: Omit<Company, "id">) => {
     const newCompany = { ...company, id: crypto.randomUUID() };
     const updatedCompanies = [...companies, newCompany];
     localStorage.setItem("companies", JSON.stringify(updatedCompanies));
+    setCompanies(updatedCompanies);
     setShowCompanyForm(false);
     toast({ title: "Success", description: "Company added successfully" });
   };
@@ -105,8 +132,8 @@ export const TicketForm = ({ onClose, onSubmit, companies }: TicketFormProps) =>
   const handleNewContactSubmit = (contact: Omit<Contact, "id">) => {
     const newContact = { ...contact, id: crypto.randomUUID() };
     const updatedContacts = [...contacts, newContact];
-    setContacts(updatedContacts);
     localStorage.setItem("contacts", JSON.stringify(updatedContacts));
+    setContacts(updatedContacts);
     setShowContactForm(false);
     toast({ title: "Success", description: "Contact added successfully" });
   };
@@ -119,7 +146,7 @@ export const TicketForm = ({ onClose, onSubmit, companies }: TicketFormProps) =>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Subject*</label>
+            <label className="text-sm font-medium">Subject*</label>
             <Input
               value={formData.subject}
               onChange={(e) => handleChange("subject", e.target.value)}
@@ -129,94 +156,55 @@ export const TicketForm = ({ onClose, onSubmit, companies }: TicketFormProps) =>
 
           <div className="space-y-2">
             <label className="text-sm font-medium">Company*</label>
-            <div className="flex gap-2">
-              <div className="flex-1">
-                <Select
-                  value={formData.company}
-                  onValueChange={handleCompanyChange}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a company" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {companies.map((company) => (
-                      <SelectItem key={company.id} value={company.id}>
-                        {company.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <Dialog open={showCompanyForm} onOpenChange={setShowCompanyForm}>
-                <DialogTrigger asChild>
-                  <Button variant="outline" size="icon">
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-h-[100vh] overflow-y-auto">
-                  <CompanyForm
-                    onClose={() => setShowCompanyForm(false)}
-                    onSubmit={handleNewCompanySubmit}
-                  />
-                </DialogContent>
-              </Dialog>
-            </div>
+            <Select value={formData.company} onValueChange={handleCompanyChange}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a company" />
+              </SelectTrigger>
+              <SelectContent>
+                {companies.map((company) => (
+                  <SelectItem key={company.id} value={company.id}>
+                    {company.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-2">
             <label className="text-sm font-medium">Contact*</label>
-            <div className="flex gap-2">
-              <div className="flex-1">
-                <Select
-                  value={formData.contact}
-                  onValueChange={(value) => handleChange("contact", value)}
-                  disabled={!formData.company}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder={formData.company ? "Select a contact" : "Select a company first"} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {filteredContacts.map((contact) => (
-                      <SelectItem key={contact.id} value={contact.id}>
-                        {contact.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <Dialog open={showContactForm} onOpenChange={setShowContactForm}>
-                <DialogTrigger asChild>
-                  <Button variant="outline" size="icon" disabled={!formData.company}>
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <ContactForm
-                    onClose={() => setShowContactForm(false)}
-                    onSubmit={handleNewContactSubmit}
-                    companies={companies}
-                  />
-                </DialogContent>
-              </Dialog>
-            </div>
+            <Select
+              value={formData.contact}
+              onValueChange={(value) => handleChange("contact", value)}
+              disabled={!formData.company}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select a contact" />
+              </SelectTrigger>
+              <SelectContent>
+                {filteredContacts.map((contact) => (
+                  <SelectItem key={contact.id} value={contact.id}>
+                    {contact.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Type</label>
-              <Select onValueChange={(value) => handleChange("type", value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="problem">Problem</SelectItem>
-                  <SelectItem value="question">Question</SelectItem>
-                  <SelectItem value="incident">Incident</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Type</label>
+            <Select onValueChange={(value) => handleChange("type", value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="problem">Problem</SelectItem>
+                <SelectItem value="question">Question</SelectItem>
+                <SelectItem value="incident">Incident</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
-            <div className="space-y-2">
+          <div className="space-y-2">
               <label className="text-sm font-medium">Source</label>
               <Select onValueChange={(value) => handleChange("source", value)}>
                 <SelectTrigger>
@@ -229,8 +217,7 @@ export const TicketForm = ({ onClose, onSubmit, companies }: TicketFormProps) =>
                 </SelectContent>
               </Select>
             </div>
-          </div>
-
+        
           <div className="space-y-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">Priority</label>

@@ -54,6 +54,7 @@ const Tickets = () => {
                       onClose={() => setShowForm(false)}
                       onSubmit={handleCreateTicket}
                       companies={companies}
+                      setCompanies={setCompanies}
                     />
                     </div>
               </div>
