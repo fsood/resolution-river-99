@@ -8,11 +8,15 @@ interface TicketHeaderProps {
 
 export const TicketHeader = ({ tickets }: TicketHeaderProps) => {
   return (
-    <div className="flex items-center justify-between border-b pb-4">
-      <div className="flex items-center gap-4">
-        <SidebarTrigger />
-        <h1 className="text-2xl font-bold text-primary">Support Desk</h1>
+    <div className="flex-1">
+    <header className="bg-white border-b sticky top-0 z-10">
+      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+        <div className="flex items-center gap-2">
+          <SidebarTrigger />
+          <h1 className="text-2xl font-bold text-primary">Support Tickets</h1>
+        </div>
       </div>
+    </header>
     </div>
   );
 };
