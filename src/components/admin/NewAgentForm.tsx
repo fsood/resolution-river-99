@@ -197,11 +197,6 @@ export const NewAgentForm = ({ onClose }: { onClose?: () => void }) => {
               <SelectTrigger>
                 <SelectValue placeholder="Select role" />
               </SelectTrigger>
-<<<<<<< HEAD
-              <SelectContent className="bg-white">
-                <SelectItem value="support">Support agent</SelectItem>
-                <SelectItem value="collaborator">Collaborator</SelectItem>
-=======
               <SelectContent>
                 {(agentType === "support" ? SUPPORT_ROLES : COLLABORATOR_ROLES).map((role) => (
                   <SelectItem key={role} value={role}>
@@ -210,59 +205,11 @@ export const NewAgentForm = ({ onClose }: { onClose?: () => void }) => {
                     ).join(" ")}
                   </SelectItem>
                 ))}
->>>>>>> 5e3e4af665dcc8c94a0157a02c414674143c3e0a
               </SelectContent>
             </Select>
           </div>
 
           <div>
-<<<<<<< HEAD
-            <RadioGroup value={timeType} onValueChange={setTimeType}>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="full-time" id="full-time" />
-                <Label htmlFor="full-time">
-                  <div>Full time</div>
-                  <p className="text-sm text-gray-500">(9 seats available)</p>
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="occasional" id="occasional" />
-                <Label htmlFor="occasional">
-                  <div>Occasional</div>
-                  <p className="text-sm text-gray-500">(3 day passes available)</p>
-                </Label>
-              </div>
-            </RadioGroup>
-          </div>
-
-          <div className="space-y-4">
-            <h3 className="font-medium">Agent details</h3>
-            
-            <div>
-              <Label htmlFor="email">Email address *</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-
-            <div>
-              <Label>Role</Label>
-              <Select value={role} onValueChange={setRole}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select role" />
-                </SelectTrigger>
-                <SelectContent className="bg-white">
-                  <SelectItem value="admin">Account Administrator</SelectItem>
-                  <SelectItem value="supervisor">Supervisor</SelectItem>
-                  <SelectItem value="agent">Agent</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-=======
             <Label>Groups</Label>
             <Select
               value={selectedGroups[0]}
@@ -282,7 +229,6 @@ export const NewAgentForm = ({ onClose }: { onClose?: () => void }) => {
             <p className="text-sm text-gray-500 mt-1">
               Organize agents into specific groups for better ticket management and workflows
             </p>
->>>>>>> 5e3e4af665dcc8c94a0157a02c414674143c3e0a
           </div>
         </div>
       </div>
