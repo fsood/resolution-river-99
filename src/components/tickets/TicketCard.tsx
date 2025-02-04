@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { AlertCircle, Clock, CheckCircle2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import type { Ticket } from "@/types/ticket";
 
 interface TicketCardProps {
@@ -32,10 +33,14 @@ const priorityColors = {
 };
 
 export const TicketCard = ({ ticket }: TicketCardProps) => {
+  const navigate = useNavigate();
   const StatusIcon = statusConfig[ticket.status].icon;
 
   return (
-    <Card className="p-4 hover:shadow-md transition-shadow">
+    <Card 
+      className="p-4 hover:shadow-md transition-shadow cursor-pointer"
+      onClick={() => navigate(`/tickets/${ticket.id}`)}
+    >
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="space-y-1">
