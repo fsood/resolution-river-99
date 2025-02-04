@@ -12,6 +12,7 @@ import Solutions from "./pages/Solutions";
 import Analytics from "./pages/Analytics";
 import Admin from "./pages/Admin";
 import Agents from "./pages/Agents";
+import Groups from "./pages/Groups";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/agents" element={<Agents />} />
+            <Route path="/admin/groups" element={<Groups />} />
           </Routes>
         </div>
       </TooltipProvider>

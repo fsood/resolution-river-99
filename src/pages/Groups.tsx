@@ -33,7 +33,10 @@ const Groups = () => {
       <div className="min-h-screen flex w-full">
         <AppSidebar />
         <div className="flex-1">
-          <div className="p-8">
+          <Button className="n-6" variant="link" onClick={() => window.history.back()}>
+            ← Admin
+          </Button>
+          <div className="p-3">
             <div className="max-w-6xl mx-auto">
               <div className="flex justify-between items-center mb-8">
                 <h1 className="text-2xl font-bold">Groups</h1>
