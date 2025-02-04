@@ -42,17 +42,17 @@ export const TicketForm = ({ onClose, onSubmit, initialData }: TicketFormProps) 
     agent: string;
     description: string;
     documentUrl: string;
-  }>(initialData || {
-    subject: "",
-    company: "",
-    contact: "",
-    type: "problem",
-    source: "",
-    status: "open",
-    priority: "high",
-    agent: "",
-    description: "",
-    documentUrl: "",
+  }>({
+    subject: initialData?.subject || "",
+    company: initialData?.company || "",
+    contact: initialData?.contact || "",
+    type: initialData?.type || "problem",
+    source: initialData?.source || "",
+    status: initialData?.status || "open",
+    priority: initialData?.priority || "high",
+    agent: initialData?.agent || "",
+    description: initialData?.description || "",
+    documentUrl: initialData?.documentUrl || "",
   });
 
   useEffect(() => {

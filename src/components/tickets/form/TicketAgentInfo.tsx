@@ -43,7 +43,7 @@ export const TicketAgentInfo = ({
         <SelectTrigger>
           <SelectValue placeholder="Select agent" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="bg-white">
           {agents.map((agent) => (
             <SelectItem key={agent.id} value={agent.id}>
               {agent.email}

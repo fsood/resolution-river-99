@@ -25,7 +25,7 @@ export const TicketTypeInfo = ({
           <SelectTrigger>
             <SelectValue placeholder="Select type" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white">
             <SelectItem value="problem">Problem</SelectItem>
             <SelectItem value="question">Question</SelectItem>
             <SelectItem value="incident">Incident</SelectItem>
@@ -39,7 +39,7 @@ export const TicketTypeInfo = ({
           <SelectTrigger>
             <SelectValue placeholder="Select source" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white">
             <SelectItem value="email">Email</SelectItem>
             <SelectItem value="phone">Phone</SelectItem>
             <SelectItem value="whatsapp">WhatsApp</SelectItem>
@@ -53,7 +53,7 @@ export const TicketTypeInfo = ({
           <SelectTrigger>
             <SelectValue placeholder="Select priority" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white">
             <SelectItem value="low">Low</SelectItem>
             <SelectItem value="medium">Medium</SelectItem>
             <SelectItem value="high">

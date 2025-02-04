@@ -20,7 +20,7 @@ export const CategoryField = ({ value, onChange }: CategoryFieldProps) => {
         <SelectTrigger>
           <SelectValue placeholder="Select category" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="bg-white">
           <SelectItem value="guides">Guides</SelectItem>
           <SelectItem value="tutorials">Tutorials</SelectItem>
           <SelectItem value="best-practices">Best Practices</SelectItem>

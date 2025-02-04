@@ -46,7 +46,7 @@ export const TicketBasicInfo = ({
           <SelectTrigger>
             <SelectValue placeholder="Select a company" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white">
             {companies.map((company) => (
               <SelectItem key={company.id} value={company.id}>
                 {company.name}
@@ -66,7 +66,7 @@ export const TicketBasicInfo = ({
           <SelectTrigger>
             <SelectValue placeholder="Select a contact" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white">
             {filteredContacts.map((contact) => (
               <SelectItem key={contact.id} value={contact.id}>
                 {contact.name}

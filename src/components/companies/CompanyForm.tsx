@@ -191,7 +191,7 @@ export const CompanyForm = ({ onClose, onSubmit }: CompanyFormProps) => {
               <SelectTrigger>
                 <SelectValue placeholder="Select tier" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white">
                 <SelectItem value="basic">Basic</SelectItem>
                 <SelectItem value="premium">Premium</SelectItem>
                 <SelectItem value="enterprise">Enterprise</SelectItem>

@@ -91,7 +91,7 @@ export const ContactForm = ({ onClose, onSubmit, companies }: ContactFormProps) 
               <SelectTrigger>
                 <SelectValue placeholder="Select a company" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white">
                 {companies.map((company) => (
                   <SelectItem key={company.id} value={company.name}>
                     {company.name}

@@ -73,7 +73,7 @@ export const NewAgentForm = ({ onClose }: { onClose?: () => void }) => {
               <SelectTrigger>
                 <SelectValue placeholder="Select agent type" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white">
                 <SelectItem value="support">Support agent</SelectItem>
                 <SelectItem value="collaborator">Collaborator</SelectItem>
               </SelectContent>
@@ -119,7 +119,7 @@ export const NewAgentForm = ({ onClose }: { onClose?: () => void }) => {
                 <SelectTrigger>
                   <SelectValue placeholder="Select role" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white">
                   <SelectItem value="admin">Account Administrator</SelectItem>
                   <SelectItem value="supervisor">Supervisor</SelectItem>
                   <SelectItem value="agent">Agent</SelectItem>
