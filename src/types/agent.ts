@@ -8,6 +8,7 @@ export interface Agent {
   type: "support" | "collaborator";
   timeType: "full-time" | "occasional";
   active: boolean;
+  groups: string[];
 }
 
 export type AgentRole = 

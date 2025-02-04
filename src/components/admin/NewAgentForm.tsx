@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 import type { Agent, AgentRole } from "@/types/agent";
+import type { Group } from "@/types/group";
 import { DialogTitle } from "@/components/ui/dialog";
 
 const SUPPORT_ROLES: AgentRole[] = ["account_admin", "supervisor", "agent"];
@@ -31,6 +32,13 @@ export const NewAgentForm = ({ onClose }: { onClose?: () => void }) => {
   const [phone, setPhone] = useState("");
   const [jobTitle, setJobTitle] = useState("");
   const [role, setRole] = useState<AgentRole>("agent");
+  const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
+  const [groups, setGroups] = useState<Group[]>([]);
+
+  useEffect(() => {
+    const storedGroups = JSON.parse(localStorage.getItem("groups") || "[]");
+    setGroups(storedGroups);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,10 +85,18 @@ export const NewAgentForm = ({ onClose }: { onClose?: () => void }) => {
       type: agentType,
       timeType,
       active: true,
+      groups: selectedGroups,
     };
 
     const updatedAgents = [...existingAgents, newAgent];
     localStorage.setItem("agents", JSON.stringify(updatedAgents));
+
+    // Update group agent counts
+    const updatedGroups = groups.map(group => ({
+      ...group,
+      agentCount: selectedGroups.includes(group.id) ? group.agentCount + 1 : group.agentCount
+    }));
+    localStorage.setItem("groups", JSON.stringify(updatedGroups));
 
     toast({
       title: "Success",
@@ -192,10 +208,35 @@ export const NewAgentForm = ({ onClose }: { onClose?: () => void }) => {
               </SelectContent>
             </Select>
           </div>
+
+          <div>
+            <Label>Groups</Label>
+            <Select
+              value={selectedGroups[0]}
+              onValueChange={(value) => setSelectedGroups([value])}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select group" />
+              </SelectTrigger>
+              <SelectContent>
+                {groups.map((group) => (
+                  <SelectItem key={group.id} value={group.id}>
+                    {group.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-sm text-gray-500 mt-1">
+              Organize agents into specific groups for better ticket management and workflows
+            </p>
+          </div>
         </div>
       </div>
 
       <div className="flex justify-end gap-2">
+        <Button type="button" variant="outline" onClick={onClose}>
+          Cancel
+        </Button>
         <Button type="submit">Create Agent</Button>
       </div>
     </form>
