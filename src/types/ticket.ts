@@ -3,11 +3,11 @@ export interface Ticket {
   subject: string;
   company: string;
   contact: string;
-  type: 'problem' | 'question' | 'incident';
+  type: "problem" | "question" | "incident";
   source: string;
-  status: 'open' | 'in-progress' | 'closed';
-  priority: 'low' | 'medium' | 'high';
-  agent?: string;
+  status: "open" | "in-progress" | "closed";
+  priority: "low" | "medium" | "high";
+  agent: string;
   description: string;
   documentUrl: string;
   createdAt: string;

@@ -11,27 +11,31 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
+import type { Agent, AgentRole } from "@/types/agent";
+import { DialogTitle } from "@/components/ui/dialog";
 
-interface Agent {
-  id: string;
-  email: string;
-  role: string;
-  type: string;
-  timeType: string;
-  active: boolean;
-}
+const SUPPORT_ROLES: AgentRole[] = ["account_admin", "supervisor", "agent"];
+const COLLABORATOR_ROLES: AgentRole[] = ["ticket_collaborator", "analytics_collaborator"];
+
+const SEATS = {
+  "full-time": 9,
+  "occasional": 3
+};
 
 export const NewAgentForm = ({ onClose }: { onClose?: () => void }) => {
   const { toast } = useToast();
-  const [agentType, setAgentType] = useState("support");
-  const [timeType, setTimeType] = useState("full-time");
+  const [agentType, setAgentType] = useState<"support" | "collaborator">("support");
+  const [timeType, setTimeType] = useState<"full-time" | "occasional">("full-time");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
+  const [role, setRole] = useState<AgentRole>("agent");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!email || !role) {
+    if (!email || !name || !role || !phone || !jobTitle) {
       toast({
         title: "Error",
         description: "Please fill in all required fields",
@@ -40,16 +44,41 @@ export const NewAgentForm = ({ onClose }: { onClose?: () => void }) => {
       return;
     }
 
+    const existingAgents = JSON.parse(localStorage.getItem("agents") || "[]");
+    if (existingAgents.some((agent: Agent) => agent.email === email)) {
+      toast({
+        title: "Error",
+        description: "An agent with this email already exists",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check available seats
+    const activeAgents = existingAgents.filter((agent: Agent) => 
+      agent.active && agent.timeType === timeType
+    );
+    if (activeAgents.length >= SEATS[timeType]) {
+      toast({
+        title: "Error",
+        description: `No ${timeType} seats available`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     const newAgent: Agent = {
       id: crypto.randomUUID(),
       email,
+      name,
+      phone,
+      jobTitle,
       role,
       type: agentType,
       timeType,
       active: true,
     };
 
-    const existingAgents = JSON.parse(localStorage.getItem("agents") || "[]");
     const updatedAgents = [...existingAgents, newAgent];
     localStorage.setItem("agents", JSON.stringify(updatedAgents));
 
@@ -63,69 +92,105 @@ export const NewAgentForm = ({ onClose }: { onClose?: () => void }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div>
-        <h2 className="text-lg font-semibold mb-4">New agent</h2>
-        
+      <DialogTitle>New agent</DialogTitle>
+      
+      <div className="space-y-4">
+        <div>
+          <Label>Agent type</Label>
+          <Select value={agentType} onValueChange={(value: "support" | "collaborator") => {
+            setAgentType(value);
+            setRole(value === "support" ? "agent" : "ticket_collaborator");
+          }}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select agent type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="support">Support agent</SelectItem>
+              <SelectItem value="collaborator">Collaborator</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <RadioGroup value={timeType} onValueChange={(value: "full-time" | "occasional") => setTimeType(value)}>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="full-time" id="full-time" />
+            <Label htmlFor="full-time">
+              <div>Full time</div>
+              <p className="text-sm text-gray-500">({SEATS["full-time"]} seats available)</p>
+            </Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="occasional" id="occasional" />
+            <Label htmlFor="occasional">
+              <div>Occasional</div>
+              <p className="text-sm text-gray-500">({SEATS["occasional"]} seats available)</p>
+            </Label>
+          </div>
+        </RadioGroup>
+
         <div className="space-y-4">
+          <h3 className="font-medium">Agent details</h3>
+          
           <div>
-            <Label>Agent type</Label>
-            <Select value={agentType} onValueChange={setAgentType}>
+            <Label htmlFor="email">Email address *</Label>
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="name">Name *</Label>
+            <Input
+              id="name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="phone">Phone *</Label>
+            <Input
+              id="phone"
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="jobTitle">Job Title *</Label>
+            <Input
+              id="jobTitle"
+              type="text"
+              value={jobTitle}
+              onChange={(e) => setJobTitle(e.target.value)}
+              required
+            />
+          </div>
+
+          <div>
+            <Label>Role</Label>
+            <Select value={role} onValueChange={(value: AgentRole) => setRole(value)}>
               <SelectTrigger>
-                <SelectValue placeholder="Select agent type" />
+                <SelectValue placeholder="Select role" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="support">Support agent</SelectItem>
-                <SelectItem value="collaborator">Collaborator</SelectItem>
+                {(agentType === "support" ? SUPPORT_ROLES : COLLABORATOR_ROLES).map((role) => (
+                  <SelectItem key={role} value={role}>
+                    {role.split("_").map(word => 
+                      word.charAt(0).toUpperCase() + word.slice(1)
+                    ).join(" ")}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
-          </div>
-
-          <div>
-            <RadioGroup value={timeType} onValueChange={setTimeType}>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="full-time" id="full-time" />
-                <Label htmlFor="full-time">
-                  <div>Full time</div>
-                  <p className="text-sm text-gray-500">(9 seats available)</p>
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="occasional" id="occasional" />
-                <Label htmlFor="occasional">
-                  <div>Occasional</div>
-                  <p className="text-sm text-gray-500">(3 day passes available)</p>
-                </Label>
-              </div>
-            </RadioGroup>
-          </div>
-
-          <div className="space-y-4">
-            <h3 className="font-medium">Agent details</h3>
-            
-            <div>
-              <Label htmlFor="email">Email address *</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-
-            <div>
-              <Label>Role</Label>
-              <Select value={role} onValueChange={setRole}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="admin">Account Administrator</SelectItem>
-                  <SelectItem value="supervisor">Supervisor</SelectItem>
-                  <SelectItem value="agent">Agent</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
           </div>
         </div>
       </div>
