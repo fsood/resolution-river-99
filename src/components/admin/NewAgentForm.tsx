@@ -110,129 +110,131 @@ export const NewAgentForm = ({ onClose }: { onClose?: () => void }) => {
     <form onSubmit={handleSubmit} className="space-y-6">
       <DialogTitle>New agent</DialogTitle>
       
-      <div className="space-y-4">
-        <div>
-          <Label>Agent type</Label>
-          <Select value={agentType} onValueChange={(value: "support" | "collaborator") => {
-            setAgentType(value);
-            setRole(value === "support" ? "agent" : "ticket_collaborator");
-          }}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select agent type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="support">Support agent</SelectItem>
-              <SelectItem value="collaborator">Collaborator</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <RadioGroup value={timeType} onValueChange={(value: "full-time" | "occasional") => setTimeType(value)}>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="full-time" id="full-time" />
-            <Label htmlFor="full-time">
-              <div>Full time</div>
-              <p className="text-sm text-gray-500">({SEATS["full-time"]} seats available)</p>
-            </Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="occasional" id="occasional" />
-            <Label htmlFor="occasional">
-              <div>Occasional</div>
-              <p className="text-sm text-gray-500">({SEATS["occasional"]} seats available)</p>
-            </Label>
-          </div>
-        </RadioGroup>
-
+      <div className="max-h-[400px] overflow-y-auto px-2 space-y-6">
         <div className="space-y-4">
-          <h3 className="font-medium">Agent details</h3>
-          
           <div>
-            <Label htmlFor="email">Email address *</Label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="name">Name *</Label>
-            <Input
-              id="name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="phone">Phone *</Label>
-            <Input
-              id="phone"
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              required
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="jobTitle">Job Title *</Label>
-            <Input
-              id="jobTitle"
-              type="text"
-              value={jobTitle}
-              onChange={(e) => setJobTitle(e.target.value)}
-              required
-            />
-          </div>
-
-          <div>
-            <Label>Role</Label>
-            <Select value={role} onValueChange={(value: AgentRole) => setRole(value)}>
+            <Label>Agent type</Label>
+            <Select value={agentType} onValueChange={(value: "support" | "collaborator") => {
+              setAgentType(value);
+              setRole(value === "support" ? "agent" : "ticket_collaborator");
+            }}>
               <SelectTrigger>
-                <SelectValue placeholder="Select role" />
+                <SelectValue placeholder="Select agent type" />
               </SelectTrigger>
-              <SelectContent>
-                {(agentType === "support" ? SUPPORT_ROLES : COLLABORATOR_ROLES).map((role) => (
-                  <SelectItem key={role} value={role}>
-                    {role.split("_").map(word => 
-                      word.charAt(0).toUpperCase() + word.slice(1)
-                    ).join(" ")}
-                  </SelectItem>
-                ))}
+              <SelectContent className="bg-white">
+                <SelectItem value="support">Support agent</SelectItem>
+                <SelectItem value="collaborator">Collaborator</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          <div>
-            <Label>Groups</Label>
-            <Select
-              value={selectedGroups[0]}
-              onValueChange={(value) => setSelectedGroups([value])}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select group" />
-              </SelectTrigger>
-              <SelectContent>
-                {groups.map((group) => (
-                  <SelectItem key={group.id} value={group.id}>
-                    {group.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <p className="text-sm text-gray-500 mt-1">
-              Organize agents into specific groups for better ticket management and workflows
-            </p>
+          <RadioGroup value={timeType} onValueChange={(value: "full-time" | "occasional") => setTimeType(value)}>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="full-time" id="full-time" />
+              <Label htmlFor="full-time">
+                <div>Full time</div>
+                <p className="text-sm text-gray-500">({SEATS["full-time"]} seats available)</p>
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="occasional" id="occasional" />
+              <Label htmlFor="occasional">
+                <div>Occasional</div>
+                <p className="text-sm text-gray-500">({SEATS["occasional"]} seats available)</p>
+              </Label>
+            </div>
+          </RadioGroup>
+
+          <div className="space-y-4">
+            <h3 className="font-medium">Agent details</h3>
+            
+            <div>
+              <Label htmlFor="email">Email address *</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="name">Name *</Label>
+              <Input
+                id="name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="phone">Phone *</Label>
+              <Input
+                id="phone"
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                required
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="jobTitle">Job Title *</Label>
+              <Input
+                id="jobTitle"
+                type="text"
+                value={jobTitle}
+                onChange={(e) => setJobTitle(e.target.value)}
+                required
+              />
+            </div>
+
+            <div>
+              <Label>Role</Label>
+              <Select value={role} onValueChange={(value: AgentRole) => setRole(value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select role" />
+                </SelectTrigger>
+                <SelectContent className="bg-white">
+                  {(agentType === "support" ? SUPPORT_ROLES : COLLABORATOR_ROLES).map((role) => (
+                    <SelectItem key={role} value={role}>
+                      {role.split("_").map(word => 
+                        word.charAt(0).toUpperCase() + word.slice(1)
+                      ).join(" ")}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label>Groups</Label>
+              <Select
+                value={selectedGroups[0]}
+                onValueChange={(value) => setSelectedGroups([value])}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select group" />
+                </SelectTrigger>
+                <SelectContent className="bg-white">
+                  {groups.map((group) => (
+                    <SelectItem key={group.id} value={group.id}>
+                      {group.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-sm text-gray-500 mt-1">
+                Organize agents into specific groups for better ticket management and workflows
+              </p>
+            </div>
           </div>
         </div>
       </div>
-
+            
       <div className="flex justify-end gap-2">
         <Button type="button" variant="outline" onClick={onClose}>
           Cancel
