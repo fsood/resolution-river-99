@@ -197,9 +197,11 @@ export const NewAgentForm = ({ onClose }: { onClose?: () => void }) => {
               <SelectTrigger>
                 <SelectValue placeholder="Select role" />
               </SelectTrigger>
-              <SelectContent className="bg-white" />
+<<<<<<< HEAD
+              <SelectContent className="bg-white">
                 <SelectItem value="support">Support agent</SelectItem>
                 <SelectItem value="collaborator">Collaborator</SelectItem>
+=======
               <SelectContent>
                 {(agentType === "support" ? SUPPORT_ROLES : COLLABORATOR_ROLES).map((role) => (
                   <SelectItem key={role} value={role}>
@@ -213,7 +215,8 @@ export const NewAgentForm = ({ onClose }: { onClose?: () => void }) => {
           </div>
 
           <div>
-            <RadioGroup value={timeType} onValueChange={(value: "full-time" | "occasional") => setTimeType(value)}>
+<<<<<<< HEAD
+            <RadioGroup value={timeType} onValueChange={setTimeType}>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="full-time" id="full-time" />
                 <Label htmlFor="full-time">
@@ -247,7 +250,7 @@ export const NewAgentForm = ({ onClose }: { onClose?: () => void }) => {
 
             <div>
               <Label>Role</Label>
-              <Select value={role} onValueChange={(value: string) => setRole(value as AgentRole)}>
+              <Select value={role} onValueChange={setRole}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select role" />
                 </SelectTrigger>
@@ -258,6 +261,7 @@ export const NewAgentForm = ({ onClose }: { onClose?: () => void }) => {
                 </SelectContent>
               </Select>
             </div>
+=======
             <Label>Groups</Label>
             <Select
               value={selectedGroups[0]}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,11 +20,16 @@ const BUSINESS_HOURS = [
   "Custom schedule"
 ];
 
-export const NewGroupForm = ({ onClose }: { onClose?: () => void }) => {
+interface NewGroupFormProps {
+  onClose?: () => void;
+  initialData?: Group | null;
+}
+
+export const NewGroupForm = ({ onClose, initialData }: NewGroupFormProps) => {
   const { toast } = useToast();
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [businessHours, setBusinessHours] = useState(BUSINESS_HOURS[0]);
+  const [name, setName] = useState(initialData?.name || "");
+  const [description, setDescription] = useState(initialData?.description || "");
+  const [businessHours, setBusinessHours] = useState(initialData?.businessHours || BUSINESS_HOURS[0]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,7 +44,7 @@ export const NewGroupForm = ({ onClose }: { onClose?: () => void }) => {
     }
 
     const existingGroups = JSON.parse(localStorage.getItem("groups") || "[]");
-    if (existingGroups.some((group: Group) => group.name === name)) {
+    if (!initialData && existingGroups.some((group: Group) => group.name === name)) {
       toast({
         title: "Error",
         description: "A group with this name already exists",
@@ -49,19 +54,22 @@ export const NewGroupForm = ({ onClose }: { onClose?: () => void }) => {
     }
 
     const newGroup: Group = {
-      id: crypto.randomUUID(),
+      id: initialData?.id || crypto.randomUUID(),
       name,
       description,
       businessHours,
-      agentCount: 0,
+      agentCount: initialData?.agentCount || 0,
     };
 
-    const updatedGroups = [...existingGroups, newGroup];
+    const updatedGroups = initialData
+      ? existingGroups.map((group: Group) => group.id === initialData.id ? newGroup : group)
+      : [...existingGroups, newGroup];
+      
     localStorage.setItem("groups", JSON.stringify(updatedGroups));
 
     toast({
       title: "Success",
-      description: "Group created successfully",
+      description: `Group ${initialData ? 'updated' : 'created'} successfully`,
     });
 
     if (onClose) onClose();
@@ -69,7 +77,7 @@ export const NewGroupForm = ({ onClose }: { onClose?: () => void }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <DialogTitle>New group</DialogTitle>
+      <DialogTitle>{initialData ? 'Edit group' : 'New group'}</DialogTitle>
       
       <div className="space-y-4">
         <div>
@@ -115,7 +123,7 @@ export const NewGroupForm = ({ onClose }: { onClose?: () => void }) => {
         <Button type="button" variant="outline" onClick={onClose}>
           Cancel
         </Button>
-        <Button type="submit">Create</Button>
+        <Button type="submit">{initialData ? 'Save changes' : 'Create'}</Button>
       </div>
     </form>
   );
