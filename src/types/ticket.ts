@@ -9,6 +9,7 @@ export interface Ticket {
   priority: 'low' | 'medium' | 'high';
   agent?: string;
   description: string;
+  documentUrl: string;
   createdAt: string;
   closedAt?: string;
   companyId: string;

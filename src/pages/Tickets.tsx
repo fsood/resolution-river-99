@@ -6,12 +6,10 @@ import { Button } from "@/components/ui/button";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import type { Ticket } from "@/types/ticket";
-import { TicketHeader } from "@/components/tickets/TicketHeader";
 
 const Tickets = () => {
   const [showForm, setShowForm] = useState(false);
   const [tickets, setTickets] = useState<Ticket[]>([]);
-  const [companies, setCompanies] = useState<any[]>([]); // To store company data for selecting in contact form
   const location = useLocation();
 
   // Load tickets from localStorage on component mount
@@ -48,15 +46,13 @@ const Tickets = () => {
                   >
                     ← Back to Tickets
                   </Button>
-                  </div>
-                  <div className="space-y-4">
-                    <TicketForm
-                      onClose={() => setShowForm(false)}
-                      onSubmit={handleCreateTicket}
-                      companies={companies}
-                      setCompanies={setCompanies}
-                    />
-                    </div>
+                </div>
+                <div className="space-y-4">
+                  <TicketForm
+                    onClose={() => setShowForm(false)}
+                    onSubmit={handleCreateTicket}
+                  />
+                </div>
               </div>
             ) : (
               <TicketList tickets={tickets} onNewTicket={() => setShowForm(true)} />
