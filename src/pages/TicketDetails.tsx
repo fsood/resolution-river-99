@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Card } from "@/components/ui/card";
@@ -8,24 +8,75 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useState, useEffect } from "react";
+import { useToast } from "@/components/ui/use-toast";
 import type { Ticket } from "@/types/ticket";
-import { AlertCircle, Clock, CheckCircle2, Info } from "lucide-react";
+import type { Contact } from "@/types/contact";
+import { AlertCircle, Clock, CheckCircle2, Info, Trash2, Edit, Merge, X } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { TicketForm } from "@/components/TicketForm";
 
 const TicketDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [ticket, setTicket] = useState<Ticket | null>(null);
+  const [contact, setContact] = useState<Contact | null>(null);
+  const [showEditDialog, setShowEditDialog] = useState(false);
 
   useEffect(() => {
     const tickets = JSON.parse(localStorage.getItem("tickets") || "[]");
     const foundTicket = tickets.find((t: Ticket) => t.id === id);
     if (foundTicket) {
       setTicket(foundTicket);
+      
+      // Load contact details
+      const contacts = JSON.parse(localStorage.getItem("contacts") || "[]");
+      const ticketContact = contacts.find((c: Contact) => c.id === foundTicket.contact);
+      setContact(ticketContact || null);
     }
   }, [id]);
 
   if (!ticket) {
     return <div>Loading...</div>;
   }
+
+  const handleCloseTicket = () => {
+    const tickets = JSON.parse(localStorage.getItem("tickets") || "[]");
+    const updatedTickets = tickets.map((t: Ticket) =>
+      t.id === ticket.id ? { ...t, status: "closed", closedAt: new Date().toISOString() } : t
+    );
+    localStorage.setItem("tickets", JSON.stringify(updatedTickets));
+    setTicket({ ...ticket, status: "closed", closedAt: new Date().toISOString() });
+    toast({
+      title: "Success",
+      description: "Ticket closed successfully",
+    });
+  };
+
+  const handleDeleteTicket = () => {
+    const tickets = JSON.parse(localStorage.getItem("tickets") || "[]");
+    const updatedTickets = tickets.filter((t: Ticket) => t.id !== ticket.id);
+    localStorage.setItem("tickets", JSON.stringify(updatedTickets));
+    toast({
+      title: "Success",
+      description: "Ticket deleted successfully",
+    });
+    navigate("/tickets");
+  };
+
+  const handleMergeTicket = () => {
+    // Implement merge functionality
+    toast({
+      title: "Info",
+      description: "Merge functionality will be implemented soon",
+    });
+  };
 
   const statusConfig = {
     open: {
@@ -54,16 +105,65 @@ const TicketDetails = () => {
         <div className="flex-1 p-8">
           <div className="max-w-5xl mx-auto">
             <div className="mb-6">
-              <h1 className="text-2xl font-bold mb-2">{ticket.subject}</h1>
-              <div className="flex gap-2 items-center">
-                <Badge className={statusConfig[ticket.status].className}>
-                  <StatusIcon className="h-3 w-3 mr-1" />
-                  {statusConfig[ticket.status].label}
-                </Badge>
-                <Badge variant="outline">{ticket.type}</Badge>
-                <Badge variant="outline" className="bg-primary/10">
-                  {ticket.priority}
-                </Badge>
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <h1 className="text-2xl font-bold mb-2">{ticket.subject}</h1>
+                  <div className="flex gap-2 items-center">
+                    <Badge className={statusConfig[ticket.status].className}>
+                      <StatusIcon className="h-3 w-3 mr-1" />
+                      {statusConfig[ticket.status].label}
+                    </Badge>
+                    <Badge variant="outline">{ticket.type}</Badge>
+                    <Badge variant="outline" className="bg-primary/10">
+                      {ticket.priority}
+                    </Badge>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="sm">
+                        <Edit className="h-4 w-4 mr-2" />
+                        Edit
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-4xl">
+                      <DialogHeader>
+                        <DialogTitle>Edit Ticket</DialogTitle>
+                      </DialogHeader>
+                      <TicketForm
+                        onClose={() => setShowEditDialog(false)}
+                        onSubmit={() => {}}
+                        initialData={ticket}
+                      />
+                    </DialogContent>
+                  </Dialog>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleMergeTicket}
+                  >
+                    <Merge className="h-4 w-4 mr-2" />
+                    Merge
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleCloseTicket}
+                    disabled={ticket.status === "closed"}
+                  >
+                    <X className="h-4 w-4 mr-2" />
+                    Close
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={handleDeleteTicket}
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Delete
+                  </Button>
+                </div>
               </div>
             </div>
 
@@ -87,10 +187,14 @@ const TicketDetails = () => {
                           <label className="text-sm text-gray-500">Company</label>
                           <p>{ticket.company}</p>
                         </div>
-                        <div>
-                          <label className="text-sm text-gray-500">Contact</label>
-                          <p>{ticket.contact}</p>
-                        </div>
+                        {contact && (
+                          <div className="space-y-1">
+                            <label className="text-sm text-gray-500">Contact</label>
+                            <p>{contact.name}</p>
+                            <p className="text-sm text-gray-500">{contact.email}</p>
+                            <p className="text-sm text-gray-500">{contact.phone}</p>
+                          </div>
+                        )}
                       </div>
                     </Card>
                   </TabsContent>
@@ -106,6 +210,17 @@ const TicketDetails = () => {
                             </p>
                           </div>
                         </div>
+                        {ticket.closedAt && (
+                          <div className="flex items-start gap-4">
+                            <CheckCircle2 className="h-5 w-5 text-green-500 mt-1" />
+                            <div>
+                              <p className="font-medium">Ticket closed</p>
+                              <p className="text-sm text-gray-500">
+                                {new Date(ticket.closedAt).toLocaleString()}
+                              </p>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </Card>
                   </TabsContent>
@@ -141,6 +256,7 @@ const TicketDetails = () => {
                 <Card className="p-4">
                   <h3 className="font-semibold mb-4">Add Reply</h3>
                   <div className="space-y-4">
+                    
                     <Textarea placeholder="Type your reply..." />
                     <Button>Send Reply</Button>
                   </div>

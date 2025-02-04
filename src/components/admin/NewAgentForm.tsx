@@ -12,7 +12,16 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 
-export const NewAgentForm = () => {
+interface Agent {
+  id: string;
+  email: string;
+  role: string;
+  type: string;
+  timeType: string;
+  active: boolean;
+}
+
+export const NewAgentForm = ({ onClose }: { onClose?: () => void }) => {
   const { toast } = useToast();
   const [agentType, setAgentType] = useState("support");
   const [timeType, setTimeType] = useState("full-time");
@@ -31,11 +40,25 @@ export const NewAgentForm = () => {
       return;
     }
 
-    // Here you would typically save the agent data
+    const newAgent: Agent = {
+      id: crypto.randomUUID(),
+      email,
+      role,
+      type: agentType,
+      timeType,
+      active: true,
+    };
+
+    const existingAgents = JSON.parse(localStorage.getItem("agents") || "[]");
+    const updatedAgents = [...existingAgents, newAgent];
+    localStorage.setItem("agents", JSON.stringify(updatedAgents));
+
     toast({
       title: "Success",
       description: "Agent created successfully",
     });
+
+    if (onClose) onClose();
   };
 
   return (

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Button } from "@/components/ui/button";
@@ -8,11 +8,83 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { NewAgentForm } from "@/components/admin/NewAgentForm";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Clock, Download, Search, Users } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
+
+interface Agent {
+  id: string;
+  email: string;
+  role: string;
+  type: string;
+  timeType: string;
+  active: boolean;
+}
 
 const Agents = () => {
+  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
+  const [agents, setAgents] = useState<Agent[]>([]);
+  const [showNewAgentDialog, setShowNewAgentDialog] = useState(false);
+
+  useEffect(() => {
+    const storedAgents = JSON.parse(localStorage.getItem("agents") || "[]");
+    setAgents(storedAgents);
+  }, []);
+
+  const handleDeactivateAgent = (agentId: string) => {
+    const updatedAgents = agents.map(agent =>
+      agent.id === agentId ? { ...agent, active: false } : agent
+    );
+    localStorage.setItem("agents", JSON.stringify(updatedAgents));
+    setAgents(updatedAgents);
+    toast({
+      title: "Success",
+      description: "Agent deactivated successfully",
+    });
+  };
+
+  const filteredAgents = {
+    support: agents.filter(a => a.type === "support" && a.active),
+    collaborators: agents.filter(a => a.type === "collaborator" && a.active),
+    deactivated: agents.filter(a => !a.active),
+  };
+
+  const AgentRow = ({ agent }: { agent: Agent }) => (
+    <tr className="border-t">
+      <td className="py-4">
+        <div className="flex items-center gap-3">
+          <Avatar>
+            <AvatarFallback>
+              {agent.email.substring(0, 2).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          <div>
+            <div className="font-medium">{agent.email}</div>
+            <div className="text-sm text-gray-500">{agent.timeType}</div>
+          </div>
+        </div>
+      </td>
+      <td className="py-4">--</td>
+      <td className="py-4">
+        <div>
+          {agent.role}
+        </div>
+      </td>
+      <td className="py-4">--</td>
+      <td className="py-4">
+        <div className="flex items-center gap-2">
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={() => handleDeactivateAgent(agent.id)}
+          >
+            Deactivate
+          </Button>
+        </div>
+      </td>
+    </tr>
+  );
 
   return (
     <SidebarProvider>
@@ -36,12 +108,12 @@ const Agents = () => {
                     <Download className="h-4 w-4 mr-2" />
                     Export
                   </Button>
-                  <Dialog>
+                  <Dialog open={showNewAgentDialog} onOpenChange={setShowNewAgentDialog}>
                     <DialogTrigger asChild>
                       <Button>New agent</Button>
                     </DialogTrigger>
                     <DialogContent className="max-w-2xl">
-                      <NewAgentForm />
+                      <NewAgentForm onClose={() => setShowNewAgentDialog(false)} />
                     </DialogContent>
                   </Dialog>
                 </div>
@@ -63,35 +135,27 @@ const Agents = () => {
                 <TabsList>
                   <TabsTrigger value="support">
                     Support Agents
-                    <Badge variant="secondary" className="ml-2">1</Badge>
+                    <Badge variant="secondary" className="ml-2">
+                      {filteredAgents.support.length}
+                    </Badge>
                   </TabsTrigger>
                   <TabsTrigger value="collaborators">
                     Collaborators
-                    <Badge variant="secondary" className="ml-2">0</Badge>
+                    <Badge variant="secondary" className="ml-2">
+                      {filteredAgents.collaborators.length}
+                    </Badge>
                   </TabsTrigger>
                   <TabsTrigger value="deactivated">
                     Deactivated Agents
-                    <Badge variant="secondary" className="ml-2">0</Badge>
+                    <Badge variant="secondary" className="ml-2">
+                      {filteredAgents.deactivated.length}
+                    </Badge>
                   </TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="support">
                   <Card>
                     <div className="p-4">
-                      <div className="flex justify-between items-center mb-4">
-                        <div className="flex items-center gap-4">
-                          <span className="text-sm font-medium">Sort by:</span>
-                          <select className="text-sm border rounded px-2 py-1">
-                            <option>Name</option>
-                            <option>Last active</option>
-                            <option>Role</option>
-                          </select>
-                        </div>
-                        <select className="text-sm border rounded px-2 py-1">
-                          <option>All agents (1)</option>
-                        </select>
-                      </div>
-
                       <table className="w-full">
                         <thead>
                           <tr className="text-left text-sm text-gray-500">
@@ -99,39 +163,13 @@ const Agents = () => {
                             <th className="pb-4">Add-on access</th>
                             <th className="pb-4">Roles</th>
                             <th className="pb-4">Groups</th>
-                            <th className="pb-4">Last Seen</th>
+                            <th className="pb-4">Actions</th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr className="border-t">
-                            <td className="py-4">
-                              <div className="flex items-center gap-3">
-                                <Avatar>
-                                  <AvatarFallback>FR</AvatarFallback>
-                                </Avatar>
-                                <div>
-                                  <div className="font-medium">Fatma Rashid</div>
-                                  <div className="text-sm text-gray-500">
-                                    fatmas@techbizafrica.com
-                                  </div>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="py-4">--</td>
-                            <td className="py-4">
-                              <div>
-                                Account Administrator
-                                <Badge variant="outline" className="ml-2">+2</Badge>
-                              </div>
-                            </td>
-                            <td className="py-4">--</td>
-                            <td className="py-4">
-                              <div className="flex items-center gap-2">
-                                <Clock className="h-4 w-4 text-gray-500" />
-                                <span>5 minutes ago</span>
-                              </div>
-                            </td>
-                          </tr>
+                          {filteredAgents.support.map(agent => (
+                            <AgentRow key={agent.id} agent={agent} />
+                          ))}
                         </tbody>
                       </table>
                     </div>
@@ -139,14 +177,48 @@ const Agents = () => {
                 </TabsContent>
 
                 <TabsContent value="collaborators">
-                  <Card className="p-8 text-center text-gray-500">
-                    No collaborators found
+                  <Card>
+                    <div className="p-4">
+                      <table className="w-full">
+                        <thead>
+                          <tr className="text-left text-sm text-gray-500">
+                            <th className="pb-4">Name</th>
+                            <th className="pb-4">Add-on access</th>
+                            <th className="pb-4">Roles</th>
+                            <th className="pb-4">Groups</th>
+                            <th className="pb-4">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {filteredAgents.collaborators.map(agent => (
+                            <AgentRow key={agent.id} agent={agent} />
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </Card>
                 </TabsContent>
 
                 <TabsContent value="deactivated">
-                  <Card className="p-8 text-center text-gray-500">
-                    No deactivated agents found
+                  <Card>
+                    <div className="p-4">
+                      <table className="w-full">
+                        <thead>
+                          <tr className="text-left text-sm text-gray-500">
+                            <th className="pb-4">Name</th>
+                            <th className="pb-4">Add-on access</th>
+                            <th className="pb-4">Roles</th>
+                            <th className="pb-4">Groups</th>
+                            <th className="pb-4">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {filteredAgents.deactivated.map(agent => (
+                            <AgentRow key={agent.id} agent={agent} />
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </Card>
                 </TabsContent>
               </Tabs>
