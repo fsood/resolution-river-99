@@ -11,15 +11,7 @@ import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import type { Ticket } from "@/types/ticket";
 import type { Contact } from "@/types/contact";
-import { AlertCircle, Clock, CheckCircle2, Info, Trash2, Edit, Merge, X } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { TicketForm } from "@/components/TicketForm";
+import { AlertCircle, Clock, CheckCircle2, Info, Trash2, Edit, Merge, X, Send } from "lucide-react";
 
 const TicketDetails = () => {
   const { id } = useParams();
@@ -28,6 +20,8 @@ const TicketDetails = () => {
   const [ticket, setTicket] = useState<Ticket | null>(null);
   const [contact, setContact] = useState<Contact | null>(null);
   const [showEditDialog, setShowEditDialog] = useState(false);
+  const [reply, setReply] = useState("");
+  const [replies, setReplies] = useState<Array<{text: string, timestamp: string}>>([]);
 
   useEffect(() => {
     const tickets = JSON.parse(localStorage.getItem("tickets") || "[]");
@@ -35,7 +29,6 @@ const TicketDetails = () => {
     if (foundTicket) {
       setTicket(foundTicket);
       
-      // Load contact details
       const contacts = JSON.parse(localStorage.getItem("contacts") || "[]");
       const ticketContact = contacts.find((c: Contact) => c.id === foundTicket.contact);
       setContact(ticketContact || null);
@@ -71,10 +64,26 @@ const TicketDetails = () => {
   };
 
   const handleMergeTicket = () => {
-    // Implement merge functionality
     toast({
       title: "Info",
       description: "Merge functionality will be implemented soon",
+    });
+  };
+
+  const handleSendReply = () => {
+    if (!reply.trim()) return;
+    
+    const newReply = {
+      text: reply,
+      timestamp: new Date().toISOString()
+    };
+    
+    setReplies([...replies, newReply]);
+    setReply("");
+    
+    toast({
+      title: "Success",
+      description: "Reply sent successfully",
     });
   };
 
@@ -120,28 +129,20 @@ const TicketDetails = () => {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-                    <DialogTrigger asChild>
-                      <Button variant="outline" size="sm">
-                        <Edit className="h-4 w-4 mr-2" />
-                        Edit
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-4xl">
-                      <DialogHeader>
-                        <DialogTitle>Edit Ticket</DialogTitle>
-                      </DialogHeader>
-                      <TicketForm
-                        onClose={() => setShowEditDialog(false)}
-                        onSubmit={() => {}}
-                        initialData={ticket}
-                      />
-                    </DialogContent>
-                  </Dialog>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowEditDialog(true)}
+                    disabled={ticket.status === "closed"}
+                  >
+                    <Edit className="h-4 w-4 mr-2" />
+                    Edit
+                  </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={handleMergeTicket}
+                    disabled={ticket.status === "closed"}
                   >
                     <Merge className="h-4 w-4 mr-2" />
                     Merge
@@ -159,6 +160,7 @@ const TicketDetails = () => {
                     variant="destructive"
                     size="sm"
                     onClick={handleDeleteTicket}
+                    disabled={ticket.status === "closed"}
                   >
                     <Trash2 className="h-4 w-4 mr-2" />
                     Delete
@@ -180,6 +182,7 @@ const TicketDetails = () => {
                       <h3 className="font-semibold mb-2">Description</h3>
                       <p className="text-gray-600">{ticket.description}</p>
                     </Card>
+                    
                     <Card className="p-4">
                       <h3 className="font-semibold mb-4">Contact Information</h3>
                       <div className="space-y-2">
@@ -197,7 +200,24 @@ const TicketDetails = () => {
                         )}
                       </div>
                     </Card>
+
+                    {replies.length > 0 && (
+                      <Card className="p-4">
+                        <h3 className="font-semibold mb-4">Replies</h3>
+                        <div className="space-y-4">
+                          {replies.map((reply, index) => (
+                            <div key={index} className="border-b pb-4 last:border-b-0">
+                              <p className="text-gray-600">{reply.text}</p>
+                              <p className="text-sm text-gray-500 mt-2">
+                                {new Date(reply.timestamp).toLocaleString()}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </Card>
+                    )}
                   </TabsContent>
+                  
                   <TabsContent value="activity">
                     <Card className="p-4">
                       <div className="space-y-4">
@@ -256,9 +276,19 @@ const TicketDetails = () => {
                 <Card className="p-4">
                   <h3 className="font-semibold mb-4">Add Reply</h3>
                   <div className="space-y-4">
-                    
-                    <Textarea placeholder="Type your reply..." />
-                    <Button>Send Reply</Button>
+                    <Textarea 
+                      placeholder="Type your reply..." 
+                      value={reply}
+                      onChange={(e) => setReply(e.target.value)}
+                      disabled={ticket.status === "closed"}
+                    />
+                    <Button 
+                      onClick={handleSendReply}
+                      disabled={ticket.status === "closed"}
+                    >
+                      <Send className="h-4 w-4 mr-2" />
+                      Send Reply
+                    </Button>
                   </div>
                 </Card>
               </div>
