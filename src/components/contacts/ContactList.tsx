@@ -9,11 +9,23 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export const ContactList = ({ contacts, onEdit, onDelete }: { 
-  contacts: Contact[]; 
-  onEdit: (contact: Contact) => void; 
-  onDelete: (contactId: string) => void; 
-}) => {
+interface ContactListProps {
+  contacts: Contact[];
+  selectedContacts: string[];
+  setSelectedContacts: (contacts: string[]) => void;
+  onDeleteContact: (id: string) => void;
+  onDeleteSelected: () => void;
+  contactsCount: Record<string, number>;
+}
+
+export const ContactList = ({ 
+  contacts, 
+  selectedContacts,
+  setSelectedContacts,
+  onDeleteContact,
+  onDeleteSelected,
+  contactsCount 
+}: ContactListProps) => {
   return (
     <div className="space-y-4">
       {contacts.map(contact => (
@@ -29,11 +41,11 @@ export const ContactList = ({ contacts, onEdit, onDelete }: {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => onEdit(contact)}>
+              <DropdownMenuItem onClick={() => console.log("Edit clicked", contact)}>
                 <Pencil className="mr-2 h-4 w-4" />
                 Edit
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onDelete(contact.id)}>
+              <DropdownMenuItem onClick={() => onDeleteContact(contact.id)}>
                 <Trash className="mr-2 h-4 w-4" />
                 Delete
               </DropdownMenuItem>
@@ -41,6 +53,13 @@ export const ContactList = ({ contacts, onEdit, onDelete }: {
           </DropdownMenu>
         </div>
       ))}
+      {selectedContacts.length > 0 && (
+        <div className="flex justify-end p-4">
+          <Button variant="destructive" onClick={onDeleteSelected}>
+            Delete Selected ({selectedContacts.length})
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

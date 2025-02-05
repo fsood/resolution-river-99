@@ -81,7 +81,7 @@ export const CompanyList = ({
               <td className="py-3 px-4">{company.name}</td>
               <td className="py-3 px-4">{contactsCount[company.id] || 0}</td>
               <td className="py-3 px-4">
-              <DropdownMenu>
+                <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon">
                       <MoreVertical className="h-4 w-4" />
