@@ -9,7 +9,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const ContactList = ({ contacts, onEdit, onDelete }: { contacts: Contact[]; onEdit: (contact: Contact) => void; onDelete: (contactId: string) => void; }) => {
+export const ContactList = ({ contacts, onEdit, onDelete }: { 
+  contacts: Contact[]; 
+  onEdit: (contact: Contact) => void; 
+  onDelete: (contactId: string) => void; 
+}) => {
   return (
     <div className="space-y-4">
       {contacts.map(contact => (
@@ -40,5 +44,3 @@ const ContactList = ({ contacts, onEdit, onDelete }: { contacts: Contact[]; onEd
     </div>
   );
 };
-
-export default ContactList;
