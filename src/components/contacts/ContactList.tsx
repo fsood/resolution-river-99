@@ -96,7 +96,7 @@ export const ContactList = ({
                   <DropdownMenuContent align="end">
                     {onEditContact && (
                       <DropdownMenuItem onClick={() => onEditContact(contact)}>
-                        <Pencil className="mr-2 h-4 w-4" />
+                        <Edit className="mr-2 h-4 w-4" />
                         Edit
                       </DropdownMenuItem>
                     )}

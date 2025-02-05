@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Edit, Trash2 } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 interface ArticleListProps {
   searchQuery: string;
@@ -9,6 +10,7 @@ interface ArticleListProps {
 }
 
 export const ArticleList = ({ searchQuery, showDraftsOnly }: ArticleListProps) => {
+  const { toast } = useToast();
   const [articles, setArticles] = React.useState<Array<{
     id: string;
     title: string;
@@ -18,13 +20,27 @@ export const ArticleList = ({ searchQuery, showDraftsOnly }: ArticleListProps) =
     isDraft: boolean;
   }>>([]);
 
-  // Load articles from localStorage on component mount
   useEffect(() => {
     const storedArticles = localStorage.getItem('articles');
     if (storedArticles) {
       setArticles(JSON.parse(storedArticles));
     }
   }, []);
+
+  const handleDelete = (articleId: string) => {
+    const updatedArticles = articles.filter(article => article.id !== articleId);
+    setArticles(updatedArticles);
+    localStorage.setItem('articles', JSON.stringify(updatedArticles));
+    toast({
+      title: "Success",
+      description: "Article deleted successfully",
+    });
+  };
+
+  const handleEdit = (articleId: string) => {
+    // Navigate to edit page or open edit modal
+    console.log("Edit article:", articleId);
+  };
 
   // Group articles by category
   const groupedArticles = React.useMemo(() => {
@@ -84,10 +100,18 @@ export const ArticleList = ({ searchQuery, showDraftsOnly }: ArticleListProps) =
                         </p>
                       </div>
                       <div className="flex gap-2">
-                        <Button variant="outline" size="icon">
+                        <Button 
+                          variant="outline" 
+                          size="icon"
+                          onClick={() => handleEdit(article.id)}
+                        >
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button variant="outline" size="icon">
+                        <Button 
+                          variant="outline" 
+                          size="icon"
+                          onClick={() => handleDelete(article.id)}
+                        >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>

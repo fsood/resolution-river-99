@@ -8,9 +8,16 @@ interface AgentListItemProps {
   onEdit: (agent: Agent) => void;
   onDelete: (agentId: string) => void;
   onDeactivate: (agentId: string) => void;
+  onActivate?: (agentId: string) => void;
 }
 
-export const AgentListItem = ({ agent, onEdit, onDelete, onDeactivate }: AgentListItemProps) => {
+export const AgentListItem = ({ 
+  agent, 
+  onEdit, 
+  onDelete, 
+  onDeactivate,
+  onActivate 
+}: AgentListItemProps) => {
   return (
     <tr className="border-t">
       <td className="py-4">
@@ -45,13 +52,24 @@ export const AgentListItem = ({ agent, onEdit, onDelete, onDeactivate }: AgentLi
           >
             <Trash2 className="h-4 w-4" />
           </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => onDeactivate(agent.id)}
-          >
-            <Power className="h-4 w-4" />
-          </Button>
+          {agent.active ? (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => onDeactivate(agent.id)}
+            >
+              <Power className="h-4 w-4" />
+            </Button>
+          ) : onActivate && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => onActivate(agent.id)}
+              className="text-green-500 hover:text-green-600"
+            >
+              <Power className="h-4 w-4" />
+            </Button>
+          )}
         </div>
       </td>
     </tr>
