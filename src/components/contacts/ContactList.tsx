@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { MoreVertical, Pencil, Trash } from "lucide-react";
+import { MoreVertical, Edit, Trash } from "lucide-react";
 import type { Contact } from "@/types/contact";
 import {
   DropdownMenu,
