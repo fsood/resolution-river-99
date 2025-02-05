@@ -17,6 +17,7 @@ interface ContactListProps {
   onEditContact?: (contact: Contact) => void;
   onDeleteContact: (id: string) => void;
   onDeleteSelected: () => void;
+  contactsCount?: Record<string, number>;
 }
 
 export const ContactList: React.FC<ContactListProps> = ({
@@ -26,6 +27,7 @@ export const ContactList: React.FC<ContactListProps> = ({
   onEditContact,
   onDeleteContact,
   onDeleteSelected,
+  contactsCount = {},
 }) => {
   const handleSelectContact = (id: string) => {
     if (selectedContacts.includes(id)) {

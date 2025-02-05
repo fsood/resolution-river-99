@@ -17,6 +17,7 @@ interface CompanyListProps {
   onEditCompany?: (company: Company) => void;
   onDeleteCompany: (id: string) => void;
   onDeleteSelected: () => void;
+  contactsCount?: Record<string, number>;
 }
 
 export const CompanyList: React.FC<CompanyListProps> = ({
@@ -26,6 +27,7 @@ export const CompanyList: React.FC<CompanyListProps> = ({
   onEditCompany,
   onDeleteCompany,
   onDeleteSelected,
+  contactsCount = {},
 }) => {
   const handleSelectCompany = (id: string) => {
     if (selectedCompanies.includes(id)) {
@@ -58,6 +60,7 @@ export const CompanyList: React.FC<CompanyListProps> = ({
             <th className="text-left py-3 px-4">Company Name</th>
             <th className="text-left py-3 px-4">Industry</th>
             <th className="text-left py-3 px-4">Account Tier</th>
+            <th className="text-left py-3 px-4">Contacts</th>
             <th className="w-8 py-3 px-4"></th>
           </tr>
         </thead>
@@ -73,6 +76,7 @@ export const CompanyList: React.FC<CompanyListProps> = ({
               <td className="py-3 px-4">{company.name}</td>
               <td className="py-3 px-4">{company.industry}</td>
               <td className="py-3 px-4">{company.accTier}</td>
+              <td className="py-3 px-4">{contactsCount[company.id] || 0}</td>
               <td className="py-3 px-4">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
