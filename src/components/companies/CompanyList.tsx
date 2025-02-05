@@ -54,13 +54,6 @@ export const CompanyList = ({
             <th className="w-8 py-3 px-4">
               <Checkbox
                 checked={selectedCompanies.length === companies.length && companies.length > 0}
-                ref={(el) => {
-                  if (el) {
-                    (el as HTMLInputElement).indeterminate =
-                      selectedCompanies.length > 0 &&
-                      selectedCompanies.length < companies.length;
-                  }
-                }}
                 onCheckedChange={(checked) => handleSelectAll(!!checked)}
               />
             </th>
