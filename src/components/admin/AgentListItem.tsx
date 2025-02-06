@@ -18,17 +18,23 @@ export const AgentListItem = ({
   onDeactivate,
   onActivate 
 }: AgentListItemProps) => {
+  // Get initials safely, default to "AG" if name is undefined
+  const getInitials = (name: string | undefined) => {
+    if (!name) return "AG";
+    return name.substring(0, 2).toUpperCase();
+  };
+
   return (
     <tr className="border-t">
       <td className="py-4">
         <div className="flex items-center gap-3">
           <Avatar>
             <AvatarFallback>
-              {agent.name.substring(0, 2).toUpperCase()}
+              {getInitials(agent.name)}
             </AvatarFallback>
           </Avatar>
           <div>
-            <div className="font-medium">{agent.name}</div>
+            <div className="font-medium">{agent.name || "Unknown Agent"}</div>
             <div className="text-sm text-gray-500">{agent.email}</div>
           </div>
         </div>
