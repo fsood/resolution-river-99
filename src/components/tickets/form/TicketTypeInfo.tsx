@@ -21,7 +21,10 @@ export const TicketTypeInfo = ({
     <div className="space-y-6">
       <div className="space-y-2">
         <Label>Type</Label>
-        <Select onValueChange={(value) => handleChange("type", value)}>
+        <Select 
+          value={formData.type} 
+          onValueChange={(value) => handleChange("type", value)}
+        >
           <SelectTrigger>
             <SelectValue placeholder="Select type" />
           </SelectTrigger>
@@ -35,7 +38,10 @@ export const TicketTypeInfo = ({
 
       <div className="space-y-2">
         <Label>Source</Label>
-        <Select onValueChange={(value) => handleChange("source", value)}>
+        <Select 
+          value={formData.source} 
+          onValueChange={(value) => handleChange("source", value)}
+        >
           <SelectTrigger>
             <SelectValue placeholder="Select source" />
           </SelectTrigger>
@@ -49,7 +55,10 @@ export const TicketTypeInfo = ({
 
       <div className="space-y-2">
         <Label>Priority</Label>
-        <Select onValueChange={(value) => handleChange("priority", value)}>
+        <Select 
+          value={formData.priority} 
+          onValueChange={(value) => handleChange("priority", value)}
+        >
           <SelectTrigger>
             <SelectValue placeholder="Select priority" />
           </SelectTrigger>
