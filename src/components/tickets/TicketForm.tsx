@@ -1,14 +1,14 @@
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import type { Ticket } from "@/types/ticket";
 import { BasicInfoFields } from "./form/BasicInfoFields";
 import { ContactFields } from "./form/ContactFields";
 import { TicketDetailsFields } from "./form/TicketDetailsFields";
-import type { Ticket } from "@/types/ticket";
+import { Button } from "@/components/ui/button";
 
 interface TicketFormProps {
   onClose: () => void;
-  onSubmit: (ticketData: Omit<Ticket, "id">) => void;
+  onSubmit: (ticket: Omit<Ticket, "id">) => void;
 }
 
 export const TicketForm = ({ onClose, onSubmit }: TicketFormProps) => {
@@ -25,7 +25,7 @@ export const TicketForm = ({ onClose, onSubmit }: TicketFormProps) => {
     status: "open",
     createdAt: new Date().toISOString(),
     documentUrl: "",
-    companyId: "",
+    companyId: ""
   });
 
   const handleChange = (field: keyof Omit<Ticket, "id">, value: string) => {
@@ -34,7 +34,8 @@ export const TicketForm = ({ onClose, onSubmit }: TicketFormProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.subject || !formData.description || !formData.company || !formData.contact) {
+    
+    if (!formData.subject || !formData.description) {
       toast({
         title: "Error",
         description: "Please fill in all required fields",
@@ -42,21 +43,22 @@ export const TicketForm = ({ onClose, onSubmit }: TicketFormProps) => {
       });
       return;
     }
+
     onSubmit(formData);
     onClose();
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <BasicInfoFields formData={formData} handleChange={handleChange} />
-      <ContactFields formData={formData} handleChange={handleChange} />
-      <TicketDetailsFields formData={formData} handleChange={handleChange} />
+      <BasicInfoFields formData={formData} onChange={handleChange} />
+      <ContactFields formData={formData} onChange={handleChange} />
+      <TicketDetailsFields formData={formData} onChange={handleChange} />
       
-      <div className="flex justify-end space-x-2">
+      <div className="flex justify-end gap-2">
         <Button type="button" variant="outline" onClick={onClose}>
           Cancel
         </Button>
-        <Button type="submit">Submit</Button>
+        <Button type="submit">Create Ticket</Button>
       </div>
     </form>
   );
