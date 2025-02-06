@@ -16,8 +16,17 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background p-0 pt-0">
+      {/* Centered Logo Above the Card Content */}
+      <div className="mb-o">
+      <img 
+        src=".\public\logo.png" // Replace with your logo's path
+        alt="Logo"
+        width={250} height={250}
+        // Adjust size of logo
+      />
+      </div>
+      <Card className="w-full max-w-md min-h-[500px] p-6 flex flex-col justify-between">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center flex items-center justify-center gap-2">
             <UserPlus className="h-6 w-6" />

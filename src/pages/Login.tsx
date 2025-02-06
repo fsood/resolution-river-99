@@ -15,18 +15,26 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background p-0 pt-0">
+    {/* Logo above the card */}
+    <div className="mb-o">
+      <img 
+        src=".\public\logo.png" // Replace with your logo's path
+        alt="Logo"
+        width={250} height={250}
+        // Adjust size of logo
+      />
+    </div>
+      <Card className="w-full max-w-md min-h-[500px] p-6 flex flex-col justify-between">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center flex items-center justify-center gap-2">
-            <LogIn className="h-6 w-6" />
-            Login
+            Welcome Back
           </CardTitle>
           <CardDescription className="text-center">
             Enter your email and password to login
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="min-h-[300px]" >
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Input
