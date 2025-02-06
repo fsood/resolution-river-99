@@ -16,29 +16,31 @@ const Solutions = () => {
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
         <EmployeeSidebar />
-        <div className="flex-1 p-8">
-          <div className="flex justify-between items-center mb-8">
-            <div className="space-y-1">
-              <h2 className="text-2xl font-bold tracking-tight">Knowledge Base</h2>
-              <p className="text-muted-foreground">
-                Create and manage help articles
-              </p>
+        <div className="flex-1">
+          <header className="bg-white border-b sticky top-0 z-10">
+            <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <h1 className="text-2xl font-bold text-primary">Solutions</h1>
+              </div>
+              <Button onClick={() => setIsNewArticleOpen(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                New Article
+              </Button>
             </div>
-            <Button onClick={() => setIsNewArticleOpen(true)}>
-              <Plus className="mr-2 h-4 w-4" /> New Article
-            </Button>
-          </div>
+          </header>
 
-          <ArticleList
-            searchQuery={searchQuery}
-            showDraftsOnly={showDraftsOnly}
-          />
+          <main className="container mx-auto px-4 py-8">
+            <ArticleList
+              searchQuery={searchQuery}
+              showDraftsOnly={showDraftsOnly}
+            />
 
-          <Dialog open={isNewArticleOpen} onOpenChange={setIsNewArticleOpen}>
-            <DialogContent className="max-w-4xl">
-              <ArticleForm onClose={() => setIsNewArticleOpen(false)} />
-            </DialogContent>
-          </Dialog>
+            <Dialog open={isNewArticleOpen} onOpenChange={setIsNewArticleOpen}>
+              <DialogContent className="max-w-4xl">
+                <ArticleForm onClose={() => setIsNewArticleOpen(false)} />
+              </DialogContent>
+            </Dialog>
+          </main>
         </div>
       </div>
     </SidebarProvider>
