@@ -22,42 +22,50 @@ const Companies = () => {
     setSelectedCompanies([]);
   };
 
+  const handleSubmitCompany = (company: Omit<Company, "id">) => {
+    const newCompany = {
+      ...company,
+      id: crypto.randomUUID(),
+    };
+    setCompanies([...companies, newCompany]);
+    setIsNewCompanyOpen(false);
+  };
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
         <EmployeeSidebar />
-        <div className="flex-1 p-8">
-          <CompanyFilters
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            onNewCompany={() => setIsNewCompanyOpen(true)}
-            companies={companies}
-            onFilterChange={{
-              setFilterCreatedAt: () => {},
-            }}
-          />
-
-          <div className="mt-8">
-            <CompanyList
+        <div className="flex-1">
+          <div className="container mx-auto px-4 py-8">
+            <CompanyFilters
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              onNewCompany={() => setIsNewCompanyOpen(true)}
               companies={companies}
-              selectedCompanies={selectedCompanies}
-              setSelectedCompanies={setSelectedCompanies}
-              onDeleteCompany={handleDeleteCompany}
-              onDeleteSelected={handleDeleteSelected}
+              onFilterChange={{
+                setFilterCreatedAt: () => {},
+              }}
             />
-          </div>
 
-          <Dialog open={isNewCompanyOpen} onOpenChange={setIsNewCompanyOpen}>
-            <DialogContent className="max-w-2xl">
-              <CompanyForm
-                onClose={() => setIsNewCompanyOpen(false)}
-                onSubmit={(company) => {
-                  setCompanies([...companies, { ...company, id: crypto.randomUUID() }]);
-                  setIsNewCompanyOpen(false);
-                }}
+            <div className="mt-8">
+              <CompanyList
+                companies={companies}
+                selectedCompanies={selectedCompanies}
+                setSelectedCompanies={setSelectedCompanies}
+                onDeleteCompany={handleDeleteCompany}
+                onDeleteSelected={handleDeleteSelected}
               />
-            </DialogContent>
-          </Dialog>
+            </div>
+
+            <Dialog open={isNewCompanyOpen} onOpenChange={setIsNewCompanyOpen}>
+              <DialogContent className="max-w-2xl">
+                <CompanyForm
+                  onClose={() => setIsNewCompanyOpen(false)}
+                  onSubmit={handleSubmitCompany}
+                />
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
       </div>
     </SidebarProvider>
