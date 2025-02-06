@@ -9,10 +9,10 @@ import TicketDetails from "./pages/TicketDetails";
 import Contacts from "./pages/employee/Contacts";
 import Companies from "./pages/employee/Companies";
 import Solutions from "./pages/employee/Solutions";
-import Analytics from "./pages/Analytics";
-import Admin from "./pages/Admin";
-import Agents from "./pages/Agents";
-import Groups from "./pages/Groups";
+import Analytics from "./pages/employee/Analytics";
+import Admin from "./pages/admin/Admin";
+import Agents from "./pages/admin/Agents";
+import Groups from "./pages/admin/Groups";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 
