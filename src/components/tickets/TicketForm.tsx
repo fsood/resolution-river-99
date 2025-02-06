@@ -13,7 +13,7 @@ interface TicketFormProps {
 
 export const TicketForm = ({ onClose, onSubmit }: TicketFormProps) => {
   const { toast } = useToast();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<Omit<Ticket, "id">>({
     subject: "",
     description: "",
     company: "",
@@ -28,7 +28,7 @@ export const TicketForm = ({ onClose, onSubmit }: TicketFormProps) => {
     companyId: "",
   });
 
-  const handleChange = (field: string, value: string) => {
+  const handleChange = (field: keyof Omit<Ticket, "id">, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
