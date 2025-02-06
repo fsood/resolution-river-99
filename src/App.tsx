@@ -13,6 +13,8 @@ import Analytics from "./pages/Analytics";
 import Admin from "./pages/Admin";
 import Agents from "./pages/Agents";
 import Groups from "./pages/Groups";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 const queryClient = new QueryClient();
 
@@ -24,7 +26,9 @@ const App = () => (
           <Toaster />
           <Sonner />
           <Routes>
-            <Route path="/" element={<Navigate to="/tickets" replace />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/tickets" element={<Tickets />} />
             <Route path="/tickets/:id" element={<TicketDetails />} />
