@@ -50,9 +50,9 @@ export const TicketForm = ({ onClose, onSubmit }: TicketFormProps) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <BasicInfoFields formData={formData} onChange={handleChange} />
-      <ContactFields formData={formData} onChange={handleChange} />
-      <TicketDetailsFields formData={formData} onChange={handleChange} />
+      <BasicInfoFields formData={formData} handleChange={handleChange} />
+      <ContactFields formData={formData} handleChange={handleChange} />
+      <TicketDetailsFields formData={formData} handleChange={handleChange} />
       
       <div className="flex justify-end gap-2">
         <Button type="button" variant="outline" onClick={onClose}>

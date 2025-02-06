@@ -1,13 +1,14 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import type { Ticket } from "@/types/ticket";
 
 interface BasicInfoFieldsProps {
   formData: {
     subject: string;
     description: string;
   };
-  handleChange: (field: string, value: string) => void;
+  handleChange: (field: keyof Omit<Ticket, "id">, value: string) => void;
 }
 
 export const BasicInfoFields = ({ formData, handleChange }: BasicInfoFieldsProps) => {
