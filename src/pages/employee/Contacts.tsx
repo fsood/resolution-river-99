@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { EmployeeSidebar } from "@/components/EmployeeSidebar";
 import { ContactList } from "@/components/contacts/ContactList";
@@ -6,12 +6,22 @@ import { ContactFilters } from "@/components/contacts/ContactFilters";
 import { ContactForm } from "@/components/contacts/ContactForm";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import type { Contact } from "@/types/contact";
+import type { Company } from "@/types/company";
 
 const Contacts = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isNewContactOpen, setIsNewContactOpen] = useState(false);
   const [contacts, setContacts] = useState<Contact[]>([]);
+  const [companies, setCompanies] = useState<Company[]>([]);
   const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
+
+  useEffect(() => {
+    // Load companies from localStorage
+    const savedCompanies = localStorage.getItem('companies');
+    if (savedCompanies) {
+      setCompanies(JSON.parse(savedCompanies));
+    }
+  }, []);
 
   const handleDeleteContact = (id: string) => {
     setContacts(contacts.filter(contact => contact.id !== id));
@@ -51,6 +61,7 @@ const Contacts = () => {
           <Dialog open={isNewContactOpen} onOpenChange={setIsNewContactOpen}>
             <DialogContent className="max-w-2xl">
               <ContactForm
+                companies={companies}
                 onClose={() => setIsNewContactOpen(false)}
                 onSubmit={(contact) => {
                   setContacts([...contacts, { ...contact, id: crypto.randomUUID() }]);

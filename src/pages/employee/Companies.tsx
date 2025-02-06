@@ -34,7 +34,6 @@ const Companies = () => {
             companies={companies}
             onFilterChange={{
               setFilterCreatedAt: () => {},
-              setFilterIndustry: () => {},
             }}
           />
 
