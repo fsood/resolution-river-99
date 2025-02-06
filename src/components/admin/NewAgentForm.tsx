@@ -13,7 +13,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import type { Agent, AgentRole } from "@/types/agent";
 import type { Group } from "@/types/group";
-import { DialogTitle } from "@/components/ui/dialog";
+import { DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 const SUPPORT_ROLES: AgentRole[] = ["account_admin", "supervisor", "agent"];
 const COLLABORATOR_ROLES: AgentRole[] = ["ticket_collaborator", "analytics_collaborator"];
@@ -114,13 +114,6 @@ export const NewAgentForm = ({ onClose, editingAgent }: NewAgentFormProps) => {
 
     localStorage.setItem("agents", JSON.stringify(updatedAgents));
 
-    // Update group agent counts
-    const updatedGroups = groups.map(group => ({
-      ...group,
-      agentCount: selectedGroups.includes(group.id) ? group.agentCount + 1 : group.agentCount
-    }));
-    localStorage.setItem("groups", JSON.stringify(updatedGroups));
-
     toast({
       title: "Success",
       description: editingAgent ? "Agent updated successfully" : "Agent created successfully",
@@ -131,7 +124,14 @@ export const NewAgentForm = ({ onClose, editingAgent }: NewAgentFormProps) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <DialogTitle>{editingAgent ? "Edit agent" : "New agent"}</DialogTitle>
+      <div>
+        <DialogTitle>{editingAgent ? "Edit agent" : "New agent"}</DialogTitle>
+        <DialogDescription>
+          {editingAgent 
+            ? "Update the agent's information below" 
+            : "Add a new agent by filling out the information below"}
+        </DialogDescription>
+      </div>
       
       <div className="max-h-[400px] overflow-y-auto px-2 space-y-6">
         <div className="space-y-4">
