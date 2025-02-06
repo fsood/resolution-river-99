@@ -37,6 +37,7 @@ const App = () => (
             <Route path="/employee/contacts" element={<Contacts />} />
             <Route path="/employee/companies" element={<Companies />} />
             <Route path="/employee/solutions/*" element={<Solutions />} />
+            <Route path="/employee/analytics" element={<Analytics />} />
             
             {/* Admin Portal Routes */}
             <Route path="/admin" element={<Admin />} />
