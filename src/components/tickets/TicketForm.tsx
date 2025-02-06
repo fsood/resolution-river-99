@@ -20,9 +20,12 @@ export const TicketForm = ({ onClose, onSubmit }: TicketFormProps) => {
     contact: "",
     agent: "",
     type: "problem",
+    source: "email",
     priority: "medium",
     status: "open",
     createdAt: new Date().toISOString(),
+    documentUrl: "",
+    companyId: "",
   });
 
   const handleChange = (field: string, value: string) => {
@@ -70,7 +73,6 @@ export const TicketForm = ({ onClose, onSubmit }: TicketFormProps) => {
             <SelectValue placeholder="Select a company" />
           </SelectTrigger>
           <SelectContent className="bg-white">
-            {/* Replace with actual company options */}
             <SelectItem value="company1">Company 1</SelectItem>
             <SelectItem value="company2">Company 2</SelectItem>
           </SelectContent>
@@ -88,7 +90,6 @@ export const TicketForm = ({ onClose, onSubmit }: TicketFormProps) => {
             <SelectValue placeholder="Select a contact" />
           </SelectTrigger>
           <SelectContent className="bg-white">
-            {/* Replace with actual contact options */}
             <SelectItem value="contact1">Contact 1</SelectItem>
             <SelectItem value="contact2">Contact 2</SelectItem>
           </SelectContent>
@@ -105,7 +106,6 @@ export const TicketForm = ({ onClose, onSubmit }: TicketFormProps) => {
             <SelectValue placeholder="Select agent" />
           </SelectTrigger>
           <SelectContent className="bg-white">
-            {/* Replace with actual agent options */}
             <SelectItem value="agent1">Agent 1</SelectItem>
             <SelectItem value="agent2">Agent 2</SelectItem>
           </SelectContent>

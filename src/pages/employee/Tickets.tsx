@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { EmployeeSidebar } from "@/components/EmployeeSidebar";
-import { TicketList } from "@/components/TicketList";
-import { TicketForm } from "@/components/TicketForm";
+import { TicketList } from "@/components/tickets/TicketList";
+import { TicketForm } from "@/components/tickets/TicketForm";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 const Tickets = () => {
