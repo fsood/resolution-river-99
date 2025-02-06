@@ -38,29 +38,32 @@ export const AgentListItem = ({
       <td className="py-4">{agent.phone}</td>
       <td className="py-4">
         <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => onEdit(agent)}
-          >
-            <Edit className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => onDelete(agent.id)}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-          {agent.active ? (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => onDeactivate(agent.id)}
-            >
-              <Power className="h-4 w-4" />
-            </Button>
-          ) : onActivate && (
+          {agent.active && (
+            <>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => onEdit(agent)}
+              >
+                <Edit className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => onDelete(agent.id)}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => onDeactivate(agent.id)}
+              >
+                <Power className="h-4 w-4" />
+              </Button>
+            </>
+          )}
+          {!agent.active && onActivate && (
             <Button
               variant="ghost"
               size="icon"
