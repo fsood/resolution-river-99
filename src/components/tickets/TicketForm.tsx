@@ -1,9 +1,9 @@
-import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
+import { useState } from "react";
+import { BasicInfoFields } from "./form/BasicInfoFields";
+import { ContactFields } from "./form/ContactFields";
+import { TicketDetailsFields } from "./form/TicketDetailsFields";
 import type { Ticket } from "@/types/ticket";
 
 interface TicketFormProps {
@@ -13,7 +13,7 @@ interface TicketFormProps {
 
 export const TicketForm = ({ onClose, onSubmit }: TicketFormProps) => {
   const { toast } = useToast();
-  const [formData, setFormData] = useState<Omit<Ticket, "id">>({
+  const [formData, setFormData] = useState({
     subject: "",
     description: "",
     company: "",
@@ -47,105 +47,11 @@ export const TicketForm = ({ onClose, onSubmit }: TicketFormProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label>Subject*</Label>
-        <Input
-          value={formData.subject}
-          onChange={(e) => handleChange("subject", e.target.value)}
-          placeholder="Brief description of the issue"
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label>Description*</Label>
-        <Input
-          value={formData.description}
-          onChange={(e) => handleChange("description", e.target.value)}
-          placeholder="Detailed description of the issue"
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label>Company*</Label>
-        <Select value={formData.company} onValueChange={(value) => handleChange("company", value)}>
-          <SelectTrigger>
-            <SelectValue placeholder="Select a company" />
-          </SelectTrigger>
-          <SelectContent className="bg-white">
-            <SelectItem value="company1">Company 1</SelectItem>
-            <SelectItem value="company2">Company 2</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div className="space-y-2">
-        <Label>Contact*</Label>
-        <Select
-          value={formData.contact}
-          onValueChange={(value) => handleChange("contact", value)}
-          disabled={!formData.company}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select a contact" />
-          </SelectTrigger>
-          <SelectContent className="bg-white">
-            <SelectItem value="contact1">Contact 1</SelectItem>
-            <SelectItem value="contact2">Contact 2</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div className="space-y-2">
-        <Label>Agent</Label>
-        <Select
-          value={formData.agent}
-          onValueChange={(value) => handleChange("agent", value)}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select agent" />
-          </SelectTrigger>
-          <SelectContent className="bg-white">
-            <SelectItem value="agent1">Agent 1</SelectItem>
-            <SelectItem value="agent2">Agent 2</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div className="space-y-2">
-        <Label>Type</Label>
-        <Select 
-          value={formData.type} 
-          onValueChange={(value) => handleChange("type", value)}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select type" />
-          </SelectTrigger>
-          <SelectContent className="bg-white">
-            <SelectItem value="problem">Problem</SelectItem>
-            <SelectItem value="question">Question</SelectItem>
-            <SelectItem value="incident">Incident</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div className="space-y-2">
-        <Label>Priority</Label>
-        <Select 
-          value={formData.priority} 
-          onValueChange={(value) => handleChange("priority", value)}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select priority" />
-          </SelectTrigger>
-          <SelectContent className="bg-white">
-            <SelectItem value="low">Low</SelectItem>
-            <SelectItem value="medium">Medium</SelectItem>
-            <SelectItem value="high">High</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <BasicInfoFields formData={formData} handleChange={handleChange} />
+      <ContactFields formData={formData} handleChange={handleChange} />
+      <TicketDetailsFields formData={formData} handleChange={handleChange} />
+      
       <div className="flex justify-end space-x-2">
         <Button type="button" variant="outline" onClick={onClose}>
           Cancel
