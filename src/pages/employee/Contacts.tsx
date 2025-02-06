@@ -6,6 +6,7 @@ import { ContactFilters } from "@/components/contacts/ContactFilters";
 import { ContactForm } from "@/components/contacts/ContactForm";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import type { Contact } from "@/types/contact";
+
 import type { Company } from "@/types/company";
 
 const Contacts = () => {
