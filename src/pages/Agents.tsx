@@ -8,24 +8,17 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { NewAgentForm } from "@/components/admin/NewAgentForm";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Clock, Download, Search, Users } from "lucide-react";
+import { AgentListItem } from "@/components/admin/AgentListItem";
+import { Download, Search, Users } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-
-interface Agent {
-  id: string;
-  email: string;
-  role: string;
-  type: string;
-  timeType: string;
-  active: boolean;
-}
+import type { Agent } from "@/types/agent";
 
 const Agents = () => {
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const [agents, setAgents] = useState<Agent[]>([]);
   const [showNewAgentDialog, setShowNewAgentDialog] = useState(false);
+  const [editingAgent, setEditingAgent] = useState<Agent | null>(null);
 
   useEffect(() => {
     const storedAgents = JSON.parse(localStorage.getItem("agents") || "[]");
@@ -44,47 +37,38 @@ const Agents = () => {
     });
   };
 
+  const handleActivateAgent = (agentId: string) => {
+    const updatedAgents = agents.map(agent =>
+      agent.id === agentId ? { ...agent, active: true } : agent
+    );
+    localStorage.setItem("agents", JSON.stringify(updatedAgents));
+    setAgents(updatedAgents);
+    toast({
+      title: "Success",
+      description: "Agent activated successfully",
+    });
+  };
+
+  const handleEditAgent = (agent: Agent) => {
+    setEditingAgent(agent);
+    setShowNewAgentDialog(true);
+  };
+
+  const handleDeleteAgent = (agentId: string) => {
+    const updatedAgents = agents.filter(agent => agent.id !== agentId);
+    localStorage.setItem("agents", JSON.stringify(updatedAgents));
+    setAgents(updatedAgents);
+    toast({
+      title: "Success",
+      description: "Agent deleted successfully",
+    });
+  };
+
   const filteredAgents = {
     support: agents.filter(a => a.type === "support" && a.active),
     collaborators: agents.filter(a => a.type === "collaborator" && a.active),
     deactivated: agents.filter(a => !a.active),
   };
-
-  const AgentRow = ({ agent }: { agent: Agent }) => (
-    <tr className="border-t">
-      <td className="py-4">
-        <div className="flex items-center gap-3">
-          <Avatar>
-            <AvatarFallback>
-              {agent.email.substring(0, 2).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-          <div>
-            <div className="font-medium">{agent.email}</div>
-            <div className="text-sm text-gray-500">{agent.timeType}</div>
-          </div>
-        </div>
-      </td>
-      <td className="py-4">--</td>
-      <td className="py-4">
-        <div>
-          {agent.role}
-        </div>
-      </td>
-      <td className="py-4">--</td>
-      <td className="py-4">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={() => handleDeactivateAgent(agent.id)}
-          >
-            Deactivate
-          </Button>
-        </div>
-      </td>
-    </tr>
-  );
 
   return (
     <SidebarProvider>
@@ -116,7 +100,13 @@ const Agents = () => {
                       <Button>New agent</Button>
                     </DialogTrigger>
                     <DialogContent className="max-w-2xl">
-                      <NewAgentForm onClose={() => setShowNewAgentDialog(false)} />
+                      <NewAgentForm 
+                        onClose={() => {
+                          setShowNewAgentDialog(false);
+                          setEditingAgent(null);
+                        }}
+                        editingAgent={editingAgent}
+                      />
                     </DialogContent>
                   </Dialog>
                 </div>
@@ -171,7 +161,13 @@ const Agents = () => {
                         </thead>
                         <tbody>
                           {filteredAgents.support.map(agent => (
-                            <AgentRow key={agent.id} agent={agent} />
+                            <AgentListItem 
+                              key={agent.id} 
+                              agent={agent}
+                              onEdit={handleEditAgent}
+                              onDelete={handleDeleteAgent}
+                              onDeactivate={handleDeactivateAgent}
+                            />
                           ))}
                         </tbody>
                       </table>
@@ -194,7 +190,13 @@ const Agents = () => {
                         </thead>
                         <tbody>
                           {filteredAgents.collaborators.map(agent => (
-                            <AgentRow key={agent.id} agent={agent} />
+                            <AgentListItem 
+                              key={agent.id} 
+                              agent={agent}
+                              onEdit={handleEditAgent}
+                              onDelete={handleDeleteAgent}
+                              onDeactivate={handleDeactivateAgent}
+                            />
                           ))}
                         </tbody>
                       </table>
@@ -217,7 +219,14 @@ const Agents = () => {
                         </thead>
                         <tbody>
                           {filteredAgents.deactivated.map(agent => (
-                            <AgentRow key={agent.id} agent={agent} />
+                            <AgentListItem 
+                              key={agent.id} 
+                              agent={agent}
+                              onEdit={handleEditAgent}
+                              onDelete={handleDeleteAgent}
+                              onDeactivate={handleDeactivateAgent}
+                              onActivate={handleActivateAgent}
+                            />
                           ))}
                         </tbody>
                       </table>

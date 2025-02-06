@@ -17,18 +17,18 @@ interface CompanyListProps {
   onEditCompany?: (company: Company) => void;
   onDeleteCompany: (id: string) => void;
   onDeleteSelected: () => void;
-  contactsCount: Record<string, number>;
+  contactsCount?: Record<string, number>;
 }
 
-export const CompanyList = ({
+export const CompanyList: React.FC<CompanyListProps> = ({
   companies,
   selectedCompanies,
   setSelectedCompanies,
   onEditCompany,
   onDeleteCompany,
   onDeleteSelected,
-  contactsCount,
-}: CompanyListProps) => {
+  contactsCount = {},
+}) => {
   const handleSelectCompany = (id: string) => {
     if (selectedCompanies.includes(id)) {
       setSelectedCompanies(selectedCompanies.filter((companyId) => companyId !== id));
@@ -54,17 +54,12 @@ export const CompanyList = ({
             <th className="w-8 py-3 px-4">
               <Checkbox
                 checked={selectedCompanies.length === companies.length && companies.length > 0}
-                ref={(el) => {
-                  if (el) {
-                    (el as HTMLInputElement).indeterminate =
-                      selectedCompanies.length > 0 &&
-                      selectedCompanies.length < companies.length;
-                  }
-                }}
                 onCheckedChange={(checked) => handleSelectAll(!!checked)}
               />
             </th>
             <th className="text-left py-3 px-4">Company Name</th>
+            <th className="text-left py-3 px-4">Industry</th>
+            <th className="text-left py-3 px-4">Account Tier</th>
             <th className="text-left py-3 px-4">Contacts</th>
             <th className="w-8 py-3 px-4"></th>
           </tr>
@@ -79,9 +74,11 @@ export const CompanyList = ({
                 />
               </td>
               <td className="py-3 px-4">{company.name}</td>
+              <td className="py-3 px-4">{company.industry}</td>
+              <td className="py-3 px-4">{company.accTier}</td>
               <td className="py-3 px-4">{contactsCount[company.id] || 0}</td>
               <td className="py-3 px-4">
-              <DropdownMenu>
+                <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon">
                       <MoreVertical className="h-4 w-4" />

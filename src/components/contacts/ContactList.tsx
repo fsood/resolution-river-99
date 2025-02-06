@@ -1,7 +1,7 @@
 import React from "react";
+import type { Contact } from "@/types/contact";
 import { Button } from "@/components/ui/button";
 import { MoreVertical, Pencil, Trash } from "lucide-react";
-import type { Contact } from "@/types/contact";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,21 +14,21 @@ interface ContactListProps {
   contacts: Contact[];
   selectedContacts: string[];
   setSelectedContacts: (contacts: string[]) => void;
+  onEditContact?: (contact: Contact) => void;
   onDeleteContact: (id: string) => void;
   onDeleteSelected: () => void;
-  contactsCount: Record<string, number>;
-  onEditContact?: (contact: Contact) => void;
+  contactsCount?: Record<string, number>;
 }
 
-export const ContactList = ({
+export const ContactList: React.FC<ContactListProps> = ({
   contacts,
   selectedContacts,
   setSelectedContacts,
+  onEditContact,
   onDeleteContact,
   onDeleteSelected,
-  contactsCount,
-  onEditContact,
-}: ContactListProps) => {
+  contactsCount = {},
+}) => {
   const handleSelectContact = (id: string) => {
     if (selectedContacts.includes(id)) {
       setSelectedContacts(selectedContacts.filter((contactId) => contactId !== id));
@@ -54,21 +54,12 @@ export const ContactList = ({
             <th className="w-8 py-3 px-4">
               <Checkbox
                 checked={selectedContacts.length === contacts.length && contacts.length > 0}
-                ref={(el) => {
-                  if (el) {
-                    (el as HTMLInputElement).indeterminate =
-                      selectedContacts.length > 0 &&
-                      selectedContacts.length < contacts.length;
-                  }
-                }}
                 onCheckedChange={(checked) => handleSelectAll(!!checked)}
               />
             </th>
-            <th className="text-left py-3 px-4">Contact</th>
-            <th className="text-left py-3 px-4">Title</th>
+            <th className="text-left py-3 px-4">Name</th>
+            <th className="text-left py-3 px-4">Email</th>
             <th className="text-left py-3 px-4">Company</th>
-            <th className="text-left py-3 px-4">Email address</th>
-            <th className="text-left py-3 px-4">Work phone</th>
             <th className="w-8 py-3 px-4"></th>
           </tr>
         </thead>
@@ -82,10 +73,8 @@ export const ContactList = ({
                 />
               </td>
               <td className="py-3 px-4">{contact.name}</td>
-              <td className="py-3 px-4">{contact.title}</td>
-              <td className="py-3 px-4">{contact.company}</td>
               <td className="py-3 px-4">{contact.email}</td>
-              <td className="py-3 px-4">{contact.phone}</td>
+              <td className="py-3 px-4">{contact.company}</td>
               <td className="py-3 px-4">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>

@@ -1,7 +1,24 @@
-import React, { useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { useState } from "react";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 import { Edit, Trash2 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+interface Article {
+  id: string;
+  title: string;
+  content: string;
+  isDraft: boolean;
+  category: string;
+  tags: string[];
+  createdAt: string;
+}
 
 interface ArticleListProps {
   searchQuery: string;
@@ -9,95 +26,75 @@ interface ArticleListProps {
 }
 
 export const ArticleList = ({ searchQuery, showDraftsOnly }: ArticleListProps) => {
-  const [articles, setArticles] = React.useState<Array<{
-    id: string;
-    title: string;
-    category: string;
-    content: string;
-    createdAt: string;
-    isDraft: boolean;
-  }>>([]);
+  const { toast } = useToast();
+  const [articles, setArticles] = useState<Article[]>(() => {
+    return JSON.parse(localStorage.getItem("articles") || "[]");
+  });
 
-  // Load articles from localStorage on component mount
-  useEffect(() => {
-    const storedArticles = localStorage.getItem('articles');
-    if (storedArticles) {
-      setArticles(JSON.parse(storedArticles));
-    }
-  }, []);
+  const handleEdit = (article: Article) => {
+    // Navigate to edit page or open edit modal
+    toast({
+      title: "Edit Article",
+      description: "Edit functionality will be implemented soon",
+    });
+  };
 
-  // Group articles by category
-  const groupedArticles = React.useMemo(() => {
-    const filtered = articles.filter(
-      (article) =>
-        article.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        (showDraftsOnly ? article.isDraft : true)
-    );
+  const handleDelete = (articleId: string) => {
+    const updatedArticles = articles.filter(article => article.id !== articleId);
+    setArticles(updatedArticles);
+    localStorage.setItem("articles", JSON.stringify(updatedArticles));
+    
+    toast({
+      title: "Success",
+      description: "Article deleted successfully",
+    });
+  };
 
-    return filtered.reduce((acc, article) => {
-      if (!acc[article.category]) {
-        acc[article.category] = [];
-      }
-      acc[article.category].push(article);
-      return acc;
-    }, {} as Record<string, typeof articles>);
-  }, [articles, searchQuery, showDraftsOnly]);
+  const filteredArticles = articles.filter(article => {
+    const matchesSearch = article.title.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesDraft = showDraftsOnly ? article.isDraft : true;
+    return matchesSearch && matchesDraft;
+  });
 
   return (
-    <div className="space-y-8">
-      {Object.keys(groupedArticles).length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-gray-500">
-            {showDraftsOnly
-              ? "No drafts found. Create your first draft!"
-              : "No articles found. Create your first article!"}
-          </p>
-        </div>
-      ) : (
-        Object.entries(groupedArticles).map(([category, categoryArticles]) => (
-          <div key={category} className="space-y-4">
-            <h2 className="text-xl font-semibold text-primary">{category}</h2>
-            <div className="grid gap-4">
-              {categoryArticles.map((article) => (
-                <Card
-                  key={article.id}
-                  className="hover:shadow-md transition-shadow"
-                >
-                  <CardContent className="p-6">
-                    <div className="flex justify-between items-start">
-                      <div className="space-y-2">
-                        <h3 className="text-xl font-semibold">
-                          {article.title}
-                          {article.isDraft && (
-                            <span className="ml-2 text-sm text-muted-foreground">
-                              (Draft)
-                            </span>
-                          )}
-                        </h3>
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm text-muted-foreground">
-                            {new Date(article.createdAt).toLocaleDateString()}
-                          </span>
-                        </div>
-                        <p className="text-gray-600 line-clamp-2">
-                          {article.content}
-                        </p>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button variant="outline" size="icon">
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button variant="outline" size="icon">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+    <div className="space-y-4">
+      {filteredArticles.map((article) => (
+        <Card key={article.id} className="p-4">
+          <div className="flex justify-between items-start">
+            <div>
+              <h3 className="text-lg font-semibold">{article.title}</h3>
+              <p className="text-sm text-gray-500 mt-1">
+                {new Date(article.createdAt).toLocaleDateString()}
+              </p>
             </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Edit className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => handleEdit(article)}>
+                  <Edit className="h-4 w-4 mr-2" />
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => handleDelete(article.id)}
+                  className="text-red-600"
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
-        ))
+        </Card>
+      ))}
+      
+      {filteredArticles.length === 0 && (
+        <div className="text-center py-8 text-gray-500">
+          No articles found
+        </div>
       )}
     </div>
   );

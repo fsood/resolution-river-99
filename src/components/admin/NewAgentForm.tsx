@@ -13,7 +13,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import type { Agent, AgentRole } from "@/types/agent";
 import type { Group } from "@/types/group";
-import { DialogTitle } from "@/components/ui/dialog";
+import { DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 const SUPPORT_ROLES: AgentRole[] = ["account_admin", "supervisor", "agent"];
 const COLLABORATOR_ROLES: AgentRole[] = ["ticket_collaborator", "analytics_collaborator"];
@@ -23,7 +23,12 @@ const SEATS = {
   "occasional": 3
 };
 
-export const NewAgentForm = ({ onClose }: { onClose?: () => void }) => {
+interface NewAgentFormProps {
+  onClose?: () => void;
+  editingAgent?: Agent | null;
+}
+
+export const NewAgentForm = ({ onClose, editingAgent }: NewAgentFormProps) => {
   const { toast } = useToast();
   const [agentType, setAgentType] = useState<"support" | "collaborator">("support");
   const [timeType, setTimeType] = useState<"full-time" | "occasional">("full-time");
@@ -38,7 +43,18 @@ export const NewAgentForm = ({ onClose }: { onClose?: () => void }) => {
   useEffect(() => {
     const storedGroups = JSON.parse(localStorage.getItem("groups") || "[]");
     setGroups(storedGroups);
-  }, []);
+
+    if (editingAgent) {
+      setAgentType(editingAgent.type);
+      setTimeType(editingAgent.timeType);
+      setEmail(editingAgent.email);
+      setName(editingAgent.name);
+      setPhone(editingAgent.phone);
+      setJobTitle(editingAgent.jobTitle);
+      setRole(editingAgent.role);
+      setSelectedGroups(editingAgent.groups);
+    }
+  }, [editingAgent]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,7 +69,7 @@ export const NewAgentForm = ({ onClose }: { onClose?: () => void }) => {
     }
 
     const existingAgents = JSON.parse(localStorage.getItem("agents") || "[]");
-    if (existingAgents.some((agent: Agent) => agent.email === email)) {
+    if (!editingAgent && existingAgents.some((agent: Agent) => agent.email === email)) {
       toast({
         title: "Error",
         description: "An agent with this email already exists",
@@ -62,21 +78,23 @@ export const NewAgentForm = ({ onClose }: { onClose?: () => void }) => {
       return;
     }
 
-    // Check available seats
-    const activeAgents = existingAgents.filter((agent: Agent) => 
-      agent.active && agent.timeType === timeType
-    );
-    if (activeAgents.length >= SEATS[timeType]) {
-      toast({
-        title: "Error",
-        description: `No ${timeType} seats available`,
-        variant: "destructive",
-      });
-      return;
+    // Check available seats only for new agents
+    if (!editingAgent) {
+      const activeAgents = existingAgents.filter((agent: Agent) => 
+        agent.active && agent.timeType === timeType
+      );
+      if (activeAgents.length >= SEATS[timeType]) {
+        toast({
+          title: "Error",
+          description: `No ${timeType} seats available`,
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     const newAgent: Agent = {
-      id: crypto.randomUUID(),
+      id: editingAgent?.id || crypto.randomUUID(),
       email,
       name,
       phone,
@@ -84,23 +102,21 @@ export const NewAgentForm = ({ onClose }: { onClose?: () => void }) => {
       role,
       type: agentType,
       timeType,
-      active: true,
+      active: editingAgent?.active ?? true,
       groups: selectedGroups,
     };
 
-    const updatedAgents = [...existingAgents, newAgent];
-    localStorage.setItem("agents", JSON.stringify(updatedAgents));
+    const updatedAgents = editingAgent
+      ? existingAgents.map((agent: Agent) => 
+          agent.id === editingAgent.id ? newAgent : agent
+        )
+      : [...existingAgents, newAgent];
 
-    // Update group agent counts
-    const updatedGroups = groups.map(group => ({
-      ...group,
-      agentCount: selectedGroups.includes(group.id) ? group.agentCount + 1 : group.agentCount
-    }));
-    localStorage.setItem("groups", JSON.stringify(updatedGroups));
+    localStorage.setItem("agents", JSON.stringify(updatedAgents));
 
     toast({
       title: "Success",
-      description: "Agent created successfully",
+      description: editingAgent ? "Agent updated successfully" : "Agent created successfully",
     });
 
     if (onClose) onClose();
@@ -108,7 +124,14 @@ export const NewAgentForm = ({ onClose }: { onClose?: () => void }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <DialogTitle>New agent</DialogTitle>
+      <div>
+        <DialogTitle>{editingAgent ? "Edit agent" : "New agent"}</DialogTitle>
+        <DialogDescription>
+          {editingAgent 
+            ? "Update the agent's information below" 
+            : "Add a new agent by filling out the information below"}
+        </DialogDescription>
+      </div>
       
       <div className="max-h-[400px] overflow-y-auto px-2 space-y-6">
         <div className="space-y-4">
@@ -239,7 +262,7 @@ export const NewAgentForm = ({ onClose }: { onClose?: () => void }) => {
         <Button type="button" variant="outline" onClick={onClose}>
           Cancel
         </Button>
-        <Button type="submit">Create Agent</Button>
+        <Button type="submit">{editingAgent ? "Update" : "Create"} Agent</Button>
       </div>
     </form>
   );
