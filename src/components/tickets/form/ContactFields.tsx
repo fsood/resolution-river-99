@@ -1,12 +1,13 @@
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import type { Ticket } from "@/types/ticket";
 
 interface ContactFieldsProps {
   formData: {
     company: string;
     contact: string;
   };
-  handleChange: (field: string, value: string) => void;
+  handleChange: (field: keyof Omit<Ticket, "id">, value: string) => void;
 }
 
 export const ContactFields = ({ formData, handleChange }: ContactFieldsProps) => {

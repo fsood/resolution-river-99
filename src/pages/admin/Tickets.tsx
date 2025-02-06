@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { TicketList } from "@/components/TicketList";
-import { TicketForm } from "@/components/TicketForm";
+import { TicketList } from "@/components/tickets/TicketList";
+import { TicketForm } from "@/components/tickets/TicketForm";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";

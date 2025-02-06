@@ -5,6 +5,7 @@ import {
   Building2,
   LifeBuoy,
   Users,
+  BarChart,
 } from "lucide-react";
 import {
   Sidebar,
@@ -42,6 +43,11 @@ const mainMenuItems = [
     title: "Solutions",
     icon: LifeBuoy,
     path: "/employee/solutions",
+  },
+  {
+    title: "Analytics",
+    icon: BarChart,
+    path: "/employee/analytics",
   },
 ];
 
