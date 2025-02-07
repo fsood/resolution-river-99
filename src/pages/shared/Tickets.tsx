@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { AdminSidebar } from "@/components/AdminSidebar";
+import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { EmployeeSidebar } from "@/components/employee/EmployeeSidebar";
 import { TicketList } from "@/components/tickets/TicketList";
 import { useLocation } from "react-router-dom";
