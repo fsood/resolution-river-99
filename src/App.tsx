@@ -7,13 +7,10 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 // Employee routes
 import EmployeeDashboard from "./pages/employee/Dashboard";
-import EmployeeTickets from "./pages/employee/Tickets";
-import EmployeeTicketDetails from "./pages/employee/TicketDetails";
 import EmployeeAnalytics from "./pages/employee/Analytics";
 
 // Admin routes
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminTickets from "./pages/admin/AdminTickets";
 import AdminAnalytics from "./pages/admin/AdminAnalytics";
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminReports from "./pages/admin/AdminReports";
@@ -21,11 +18,10 @@ import AdminReports from "./pages/admin/AdminReports";
 // Shared routes
 import Contacts from "./pages/shared/Contacts";
 import Companies from "./pages/shared/Companies";
+import Tickets from "./pages/shared/Tickets";
+import TicketDetails from "./pages/shared/TicketDetails";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import Solutions from "./pages/employee/Solutions";
-import Agents from "./pages/admin/Agents";
-import Groups from "./pages/admin/Groups";
 
 const queryClient = new QueryClient();
 
@@ -45,25 +41,21 @@ const App = () => (
             
             {/* Employee Portal Routes */}
             <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
-            <Route path="/employee/tickets" element={<EmployeeTickets />} />
-            <Route path="/employee/tickets/:id" element={<EmployeeTicketDetails />} />
+            <Route path="/employee/tickets" element={<Tickets />} />
+            <Route path="/employee/tickets/:id" element={<TicketDetails />} />
             <Route path="/employee/contacts" element={<Contacts />} />
             <Route path="/employee/companies" element={<Companies />} />
-            <Route path="/employee/solutions" element={<Solutions />} />
             <Route path="/employee/analytics" element={<EmployeeAnalytics />} />
             
             {/* Admin Portal Routes */}
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
-            <Route path="/admin/tickets" element={<AdminTickets />} />
+            <Route path="/admin/tickets" element={<Tickets />} />
+            <Route path="/admin/tickets/:id" element={<TicketDetails />} />
             <Route path="/admin/contacts" element={<Contacts />} />
             <Route path="/admin/companies" element={<Companies />} />
             <Route path="/admin/analytics" element={<AdminAnalytics />} />
             <Route path="/admin/reports" element={<AdminReports />} />
             <Route path="/admin/settings" element={<AdminSettings />} />
-            <Route path="/admin/solutions" element={<Solutions />} />
-            <Route path="/admin/agents" element={<Agents />} />
-            <Route path="/admin/groups" element={<Groups />} />
-
           </Routes>
         </div>
       </TooltipProvider>
