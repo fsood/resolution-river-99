@@ -23,6 +23,9 @@ import Contacts from "./pages/shared/Contacts";
 import Companies from "./pages/shared/Companies";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Solutions from "./pages/employee/Solutions";
+import Agents from "./pages/admin/Agents";
+import Groups from "./pages/admin/Groups";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +49,7 @@ const App = () => (
             <Route path="/employee/tickets/:id" element={<EmployeeTicketDetails />} />
             <Route path="/employee/contacts" element={<Contacts />} />
             <Route path="/employee/companies" element={<Companies />} />
+            <Route path="/employee/solutions" element={<Solutions />} />
             <Route path="/employee/analytics" element={<EmployeeAnalytics />} />
             
             {/* Admin Portal Routes */}
@@ -56,6 +60,10 @@ const App = () => (
             <Route path="/admin/analytics" element={<AdminAnalytics />} />
             <Route path="/admin/reports" element={<AdminReports />} />
             <Route path="/admin/settings" element={<AdminSettings />} />
+            <Route path="/admin/solutions" element={<Solutions />} />
+            <Route path="/admin/agents" element={<Agents />} />
+            <Route path="/admin/groups" element={<Groups />} />
+
           </Routes>
         </div>
       </TooltipProvider>

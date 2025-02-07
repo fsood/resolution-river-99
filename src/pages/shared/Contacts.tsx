@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { EmployeeSidebar } from "@/components/employee/EmployeeSidebar";
-import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import { AdminSidebar } from "@/components/AdminSidebar";
 import { ContactList } from "@/components/contacts/ContactList";
 import { ContactFilters } from "@/components/contacts/ContactFilters";
 import { ContactForm } from "@/components/contacts/ContactForm";

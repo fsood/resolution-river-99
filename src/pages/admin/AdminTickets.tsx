@@ -1,6 +1,6 @@
 
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import { AdminSidebar } from "@/components/AdminSidebar";
 import { TicketList } from "@/components/tickets/TicketList";
 
 const AdminTickets = () => {

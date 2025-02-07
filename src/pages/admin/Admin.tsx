@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/AppSidebar";
+import { AdminSidebar } from "@/components/AdminSidebar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,7 +13,7 @@ const Admin = () => {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
-        <AppSidebar />
+        <AdminSidebar />
         <div className="flex-1">
           <header className="bg-white border-b sticky top-0 z-10">
             <div className="container mx-auto px-4 py-4">

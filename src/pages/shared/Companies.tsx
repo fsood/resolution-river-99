@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { EmployeeSidebar } from "@/components/employee/EmployeeSidebar";
-import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import { AdminSidebar } from "@/components/AdminSidebar";
 import { CompanyList } from "@/components/companies/CompanyList";
 import { CompanyFilters } from "@/components/companies/CompanyFilters";
 import { CompanyForm } from "@/components/companies/CompanyForm";

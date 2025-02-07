@@ -1,6 +1,6 @@
 
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import { AdminSidebar } from "@/components/AdminSidebar";
 import { TeamSection } from "@/components/admin/TeamSection";
 import { ChannelsSection } from "@/components/admin/ChannelsSection";
 import { WorkflowsSection } from "@/components/admin/WorkflowsSection";

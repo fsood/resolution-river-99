@@ -1,6 +1,6 @@
 
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import { AdminSidebar } from "@/components/AdminSidebar";
 import { Card } from "@/components/ui/card";
 import { BarChart, Users, Building2, Ticket } from "lucide-react";
 
