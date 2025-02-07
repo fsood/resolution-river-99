@@ -2,8 +2,8 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { AdminSidebar } from "../components/AdminSidebar";
-import { EmployeeSidebar } from "../components/employee/EmployeeSidebar";
+import { AdminSidebar } from "@/components/AdminSidebar";
+import { EmployeeSidebar } from "@/components/employee/EmployeeSidebar";
 import { useLocation } from "react-router-dom";
 
 const TicketDetails = () => {
