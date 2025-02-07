@@ -4,10 +4,8 @@ import {
   LayoutDashboard,
   Ticket,
   Building2,
-  BarChart,
   Users,
-  Settings,
-  FileText
+  BarChart,
 } from "lucide-react";
 import {
   Sidebar,
@@ -24,48 +22,38 @@ const mainMenuItems = [
   {
     title: "Dashboard",
     icon: LayoutDashboard,
-    path: "/admin/dashboard",
+    path: "/employee/dashboard",
   },
   {
     title: "Tickets",
     icon: Ticket,
-    path: "/admin/tickets",
+    path: "/employee/tickets",
   },
   {
     title: "Contacts",
     icon: Users,
-    path: "/admin/contacts",
+    path: "/employee/contacts",
   },
   {
     title: "Companies",
     icon: Building2,
-    path: "/admin/companies",
+    path: "/employee/companies",
   },
   {
     title: "Analytics",
     icon: BarChart,
-    path: "/admin/analytics",
-  },
-  {
-    title: "Reports",
-    icon: FileText,
-    path: "/admin/reports",
-  },
-  {
-    title: "Settings",
-    icon: Settings,
-    path: "/admin/settings",
+    path: "/employee/analytics",
   },
 ];
 
-export function AdminSidebar() {
+export function EmployeeSidebar() {
   const location = useLocation();
 
   return (
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Admin Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {mainMenuItems.map((item) => (
