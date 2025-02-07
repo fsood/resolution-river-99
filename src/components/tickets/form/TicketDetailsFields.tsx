@@ -5,10 +5,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 interface TicketDetailsFieldsProps {
   formData: Omit<Ticket, "id">;
-  onChange: (field: keyof Omit<Ticket, "id">, value: string) => void;
+  handleChange: (field: keyof Omit<Ticket, "id">, value: string) => void;
 }
 
-export const TicketDetailsFields = ({ formData, onChange }: TicketDetailsFieldsProps) => {
+export const TicketDetailsFields = ({ formData, handleChange }: TicketDetailsFieldsProps) => {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
@@ -16,7 +16,7 @@ export const TicketDetailsFields = ({ formData, onChange }: TicketDetailsFieldsP
           <Label>Type</Label>
           <Select 
             value={formData.type} 
-            onValueChange={(value) => onChange("type", value)}
+            onValueChange={(value) => handleChange("type", value)}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select type" />
@@ -33,7 +33,7 @@ export const TicketDetailsFields = ({ formData, onChange }: TicketDetailsFieldsP
           <Label>Priority</Label>
           <Select 
             value={formData.priority} 
-            onValueChange={(value) => onChange("priority", value)}
+            onValueChange={(value) => handleChange("priority", value)}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select priority" />
@@ -51,7 +51,7 @@ export const TicketDetailsFields = ({ formData, onChange }: TicketDetailsFieldsP
         <Label>Source</Label>
         <Select 
           value={formData.source} 
-          onValueChange={(value) => onChange("source", value)}
+          onValueChange={(value) => handleChange("source", value)}
         >
           <SelectTrigger>
             <SelectValue placeholder="Select source" />
@@ -69,7 +69,7 @@ export const TicketDetailsFields = ({ formData, onChange }: TicketDetailsFieldsP
         <Input
           type="url"
           value={formData.documentUrl}
-          onChange={(e) => onChange("documentUrl", e.target.value)}
+          onChange={(e) => handleChange("documentUrl", e.target.value)}
         />
       </div>
     </div>
