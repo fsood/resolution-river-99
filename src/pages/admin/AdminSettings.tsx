@@ -1,9 +1,9 @@
 
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Agents from "./Agents";
-import Groups from "./Groups";
+import { TeamSection } from "@/components/admin/TeamSection";
+import { ChannelsSection } from "@/components/admin/ChannelsSection";
+import { WorkflowsSection } from "@/components/admin/WorkflowsSection";
 
 const AdminSettings = () => {
   return (
@@ -17,19 +17,10 @@ const AdminSettings = () => {
             </div>
           </header>
 
-          <main className="container mx-auto px-4 py-8">
-            <Tabs defaultValue="agents">
-              <TabsList>
-                <TabsTrigger value="agents">Agents</TabsTrigger>
-                <TabsTrigger value="groups">Groups</TabsTrigger>
-              </TabsList>
-              <TabsContent value="agents">
-                <Agents />
-              </TabsContent>
-              <TabsContent value="groups">
-                <Groups />
-              </TabsContent>
-            </Tabs>
+          <main className="container mx-auto px-4 py-8 space-y-16">
+            <TeamSection />
+            <ChannelsSection />
+            <WorkflowsSection />
           </main>
         </div>
       </div>
